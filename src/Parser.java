@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Parser {
 
@@ -58,13 +59,43 @@ public class Parser {
         return false;
     }
 
-    private static boolean parseBU(char[] s) {
-        // TODO
-        // increase counter per most inner loop
-        return false;
+    private boolean parseBU(char[] s) {
+        boolean[][][] tab = new boolean[grammar.nr_non_terminals()][s.length][s.length];
+        // array: literal, start position, length of substr - 1
+        // Fill first row of table: enter true for all non-terminal A, row i column 1 if A->s[i] is a terminal rule
+        for (int i = 0; i < s.length; i++) {
+            for (Integer a: grammar.getTerminalRules(s[i])) {
+                tab[a][i][0] = true;
+            }
+        }
+
+        Integer[][][] rules = grammar.getRules();
+
+        // j = length of substring (2 - n)
+       for (int j = 1; j < s.length; j++) {
+            // i = start of substing
+            for (int i = 0; i < s.length - j; i++) {
+                // k = splitting point
+                for (int k = 0; k < j; k++) {
+                    // a = non-terminal
+                    for (int a = 0; a < rules.length; a++) {
+                        // rule = every non-terminal rule of a
+                        for (Integer[] rule : rules[a]) {
+                            // check whether first letter can produce substring i till k and second i+k+1 till j-k-1
+                            boolean both_sides = tab[rule[0]][i][k] && tab[rule[1]][i+k+1][j-k-1];
+                            tab[a][i][j] = tab[a][i][j] || both_sides;
+                            counter++;
+                        }
+                    }
+                }
+            }
+        }
+
+        // can the start variable (nonterminal 0) construct the whole input string (start 0, length n)?
+        return tab[0][0][s.length - 1];
     }
 
-    private static boolean parseTD(char[] s) {
+    private boolean parseTD(char[] s) {
         // TODO
         // increase counter per most inner loop
         return false;
