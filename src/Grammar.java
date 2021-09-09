@@ -11,6 +11,11 @@ public class Grammar {
     HashMap<Character, Integer[]> terminal_rules_term = new HashMap<>();
     HashMap<Character, Integer> non_terminals = new HashMap<>();
 
+    /**
+     * Initialise the grammar, by constructing the grammars terminals and non-terminal rules using the provided input file
+     * @param input_file the path to the txt file, where the rules are written line by line
+     * @throws IOException if something with opening and reading the input file does not work as expected
+     */
     Grammar(String input_file) throws IOException {
 
         // Rules defined as array lists, these are later converted to arrays
@@ -100,14 +105,28 @@ public class Grammar {
         }
     }
 
+    /**
+     * Return all non-terminal rules of this grammar
+     * @return 3-dimensional Integer array of the rules
+     */
     public Integer[][][] getRules() {
         return rules;
     }
 
+    /**
+     * Return the non-terminal rules of one non-terminal
+     * @param non_terminal for which the rules are wanted
+     * @return the rules as 2-dimensional Integer array
+     */
     public Integer[][] getRules(int non_terminal) {
         return rules[non_terminal];
     }
 
+    /**
+     * Get all terminals the given non-terminal can produce
+     * @param non_terminal for which the terminals are wanted
+     * @return the terminals as Character array
+     */
     public Character[] getTerminalRules(int non_terminal) {
         return terminal_rules_lit[non_terminal];
     }
@@ -118,7 +137,6 @@ public class Grammar {
      * @return Integer[] of non-terminals
      */
     public Integer[] getTerminalRules(char terminal) {
-        // Todo: there should be an easier way for this, right?
         Integer[] terminalRules = terminal_rules_term.get(terminal);
         if (terminalRules == null) {
             terminalRules = new Integer[0];
@@ -126,6 +144,10 @@ public class Grammar {
         return terminalRules;
     }
 
+    /**
+     * Get the number of non-terminals in this grammar
+     * @return the number of non-terminals
+     */
     public int nr_non_terminals() {
         return non_terminals.size();
     }

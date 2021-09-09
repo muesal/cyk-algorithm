@@ -1,9 +1,7 @@
-import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Parser {
 
-    static int counter;
+    static long counter;
     Grammar grammar;
     char[] input;
     boolean[][][] tab; // used in top-down (and buttom-up)
@@ -19,17 +17,14 @@ public class Parser {
     }
 
     /**
-     * Parse method of the grammar. Parses the input string with the chosen parser, if it contains only terminal characters.
+     * Parse method of the grammar. Parses the input string with the chosen algorithm
      *
-     * @param s input string
+     * @param parser the chosen algorithm
      * @return true if the input is a word of this grammar, false otherwise
      */
-    public boolean parse(String s, String parser) {
+    public boolean parse(String parser) {
         // Set the counter to zero
         counter = 0;
-
-        // parse input string to array of chars
-        input = s.toCharArray();
 
         // parse with the chosen algorithm and return result
         switch (parser) {
@@ -42,6 +37,13 @@ public class Parser {
         }
     }
 
+    /**
+     * Recursive function to parse the global input string.
+     * @param non_terminal the current non-terminal
+     * @param i beginning of the current substring
+     * @param j end of th current substring
+     * @return truth-value, whether the substring can be reached from this terminal
+     */
     private boolean parseNaive(int non_terminal, int i, int j) {
         counter++; // increase counter per call
 
@@ -63,6 +65,11 @@ public class Parser {
         return false;
     }
 
+    /**
+     * Parse with the Bottom-Down algorithm
+     * @param s the input string as an char array
+     * @return truth-value whether the string is in the language of this grammar
+     */
     private boolean parseBU(char[] s) {
         // allocate table, java initialises bool arrays with false for every cell
         // array: literal, start position, length of substr - 1
@@ -79,7 +86,7 @@ public class Parser {
 
         // j = length of substring (2 - n)
         for (int j = 1; j < s.length; j++) {
-            // i = start of substing
+            // i = start of substring
             for (int i = 0; i < s.length - j; i++) {
                 // a = non-terminal
                 for (int a = 0; a < rules.length; a++) {
@@ -88,9 +95,11 @@ public class Parser {
                         // k = splitting point
                         for (int k = 0; k < j; k++) {
                             // check whether first letter can produce substring i till k and second i+k+1 till j-k-1
-                            tab[a][i][j] = tab[a][i][j] ||
-                                    (tab[rule[0]][i][k] && tab[rule[1]][i + k + 1][j - k - 1]);
                             counter++;
+                            if(tab[rule[0]][i][k] && tab[rule[1]][i + k + 1][j - k - 1]) {
+                                tab[a][i][j] = true;
+                                break;
+                            }
                         }
                     }
                 }
@@ -101,6 +110,11 @@ public class Parser {
         return tab[0][0][s.length - 1];
     }
 
+    /**
+     * Parse the input string with the top-down algorithm
+     * @param s the string to parse as an array of chars
+     * @return truth-value whether the string is in the language of this grammar
+     */
     private boolean parseTD(char[] s) {
         tab = new boolean[grammar.nr_non_terminals()][s.length][s.length];
         // java initialises bool arrays with false, tab_set is to check whether cell has been allocated before
@@ -110,7 +124,7 @@ public class Parser {
     }
 
     /**
-     * PArse the input string with a top-down approach
+     * recursively parse the input string with a top-down algorithm, using memoization
      *
      * @param a a non-terminal
      * @param i the start point of the current substring
@@ -147,4 +161,11 @@ public class Parser {
         return tab[a][i][j];
     }
 
+    /**
+     * Set the input string of the parser
+     * @param s input string
+     */
+    public void set_input(String s) {
+        input = s.toCharArray();
+    }
 }

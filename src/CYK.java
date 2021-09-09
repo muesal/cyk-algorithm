@@ -1,30 +1,43 @@
-import java.io.*;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Objects;
+import java.util.Arrays;
 
 public class CYK {
 
     static Grammar grammar;
     static Parser parser;
-    static String[] test_set;
+    static TestSet testSet;
 
     public static void main(String[] args) {
+        // Check if the input is correct, and initialise the TestSet of strings
+        String[] test = {};
+        if (args.length > 0) {
+            test = args[0].split(",");
+        }
+
+        if (test.length < 4) {
+            System.out.println(" To run this program, you must give information on the set of Strings you want to parse:\n" +
+                    "prefix,suffix,n,maxlength[,initialstring]\nWhere prefix and suffix are appended n times to the left and right" +
+                    "of each new test string, until the strings reach max length. To test strings of the form a^nb^n " +
+                    "from size 100 to 5000 in steps of 100, run the program with a,b,50,5000 (be careful to add no " +
+                    "spaces.\nYou can further add an algorithm(naive, bottom up(bu)or top down(td)) as second " +
+                    "parameter, and the path to a file containing the rules of the grammar as third argument");
+            return;
+        }
+
+        String initial = test.length > 4 ? test[4] : "";
+        testSet = new TestSet(test[0], test[1], Integer.parseInt(test[2]), Integer.parseInt(test[3]), initial);
 
         // set the algorithm and the input files (Grammar and test set of strings) as given arguments or default
-        String algorithm = args.length > 0 ? args[0] : "td";
-        String grammar_file = args.length > 1 ? args[1] : "grammar.txt";
-        String test_set_file = args.length > 2 ? args[2] : "test_set.txt";
+        String algorithm = args.length > 1 ? args[1] : "td";
+        String grammar_file = args.length > 2 ? args[2] : "grammar.txt";
 
-        // uncomment to generate a test set of strings and write to test_set.txt (and maybe adapt the method)
-        //generate_test_set(5000, "(", ")");
 
         // construct grammar and test set from the input files, initialise parser with grammar
         try {
             grammar = new Grammar(grammar_file);
             parser = new Parser(grammar);
-            test_set = readTestSet(test_set_file);
         } catch (Exception e) {
             // Something at opening one of the files went wrong, abort
             System.out.println("One of the input files could not be read/opened:");
@@ -37,87 +50,128 @@ public class CYK {
 
     /**
      * Parse the set of strings, i.e., check for every string whether it is in the language of the grammar using the chosen algorithm
+     *
      * @param algorithm the chosen algorithm (naive, bottom up or top down
      */
     private static void parse(String algorithm) {
-
         // print info and head of table
-        String alg = algorithm.equals("naive") ? "naive" : algorithm.equals("bd") ? "bottom-down" : "top-down";
-        System.out.print("\nStarting computation with the " + alg + " algorithm for " + test_set.length + " input strings:\n\n");
+        String alg = algorithm.equals("naive") ? "naive" : algorithm.equals("bu") ? "bottom-down" : "top-down";
+        System.out.println("\nStarting computation with the " + alg + " algorithm input strings up to length " +
+                testSet.max + ". Every string will be parsed 10 times, and the average time computed.\nThe" +
+                "computed data will be printed again in the end, such that it is easier to copy-paste in order to" +
+                "visualize it with another tool.\n");
         System.out.printf("%-7s| %-15s | %-15s | %-7s \n", "Length", "Time in seconds", "Counter", "Truth-Value");
         System.out.print("---------------------------------------------------------\n");
 
-        boolean in_language;
-        Instant start;
-        int end;
+        ArrayList<Integer> length = new ArrayList<>();
+        ArrayList<Long> counter = new ArrayList<>();
+        ArrayList<Long> duration = new ArrayList<>();
+        ArrayList<Boolean> truth = new ArrayList<>();
 
         // parse and measure all strings
-        for (String s : test_set) {
+        while (!testSet.finished()) {
+            String s = testSet.nextString();
 
-            // start time measurement
-            start = Instant.now();
+            System.out.printf("%-7d", s.length());
+            parser.set_input(s);
 
-            // parse the current string
-            in_language = parser.parse(s, algorithm);
+            // initialize variables and arrays
+            boolean truth_value = false;
+            Instant start;
+            long[] end = new long[10];
 
-            // compute duration of execution
-            end = Duration.between(start ,Instant.now()).toSecondsPart();
+            // parse the string ten times, to get the average time passed
+            for (int j = 0; j < 10; j++) {
+                // start time measurement
+                start = Instant.now();
 
-            // TODO: maybe run parser multiple times and take average (in this case the input string should be parsed beforehand
-            // print result
-            System.out.printf("%-7d|  %-15d|  %-15d|  %-7b\n", s.length(), end, Parser.counter, in_language);
-        }
+                // parse the current string
+                truth_value = parser.parse(algorithm);
 
-        // TODO: visualize
-    }
-
-    /**
-     * This method can be used to generate a set of strings till size max_length, in steps of 100.
-     */
-    private static void generate_test_set(int max_length, String left, String right) {
-        try {
-            FileWriter myWriter = new FileWriter("test_set.txt");
-            StringBuilder l = new StringBuilder();
-            StringBuilder r = new StringBuilder();
-            StringBuilder string = new StringBuilder();
-
-            // build left and wight haf of string
-            for (int i = 0; i < 50; i++) {
-                l.append(left);
-                r.append(right);
+                // compute duration of execution
+                end[j] = Duration.between(start, Instant.now()).toSeconds();
             }
 
-            do {
-                // build strings by adding left and rigth side
-                string = new StringBuilder(l + string.toString() + r);
-                // and write to file
-                myWriter.write(string + "\n");
-            } while (string.length() < max_length);
+            // remove best and worst time (min and max), compute average
+            long min = Arrays.stream(end).min().orElse(-1);
+            long max = Arrays.stream(end).max().orElse(-1);
+            long end_sum = 0;
+            long end_elements = 0;
 
-            myWriter.close();
-        } catch (IOException e) {
-            System.out.println("An error occurred.");
-            e.printStackTrace();
+            for (long l : end) {
+                if (l == min) {
+                    min = -1; // in case more than one element is the same as min
+                } else if (l == max) {
+                    max = -1; // in case mor then one element is max
+                } else {
+                    end_elements++;
+                    end_sum += l;
+                }
+
+            }
+            long end_average = end_sum / end_elements;
+
+            // print result
+            System.out.printf("|  %-15d|  %-15d|  %-7b\n", end_average, Parser.counter, truth_value);
+
+            length.add(s.length());
+            counter.add(Parser.counter);
+            duration.add(end_average);
+            truth.add(truth_value);
+
         }
+
+        // print all tables, to make copy-pasting easier
+        System.out.print("\nValues for copy pasting:");
+        System.out.println("\nlength:\n" + length);
+        System.out.println("\ncounter:\n" + counter);
+        System.out.println("\nduration:\n" + duration);
+        System.out.println("\ntruth:\n" + truth);
     }
 
     /**
-     * Read the set of given test strings from an input file, each line is one string to test
-     * @param input_file txt file with the strings
-     * @return the array containing the strings
-     * @throws IOException if reading the file does not behave as expected
+     * Class to generate the set of test strings, i.e., to generate the next string in the set
      */
-    private static String[] readTestSet(String input_file) throws IOException {
-        // read the input file (every line is an input string,
-        BufferedReader br = new BufferedReader(new FileReader(input_file));
-        ArrayList<String> set = new ArrayList<>();
-        String line;
+    private static class TestSet {
+        StringBuilder left = new StringBuilder();
+        StringBuilder right = new StringBuilder();
+        int max;
+        String testString = "";
 
-        while ((line = br.readLine()) != null) {
-            set.add(line);
+        /**
+         * Initialise the class
+         *
+         * @param left  string to append on the left of the test String
+         * @param right string to append on the right of the test String
+         * @param n     number of times left and right should be added to get to the next string
+         * @param max   maximal length of the string (nextString appends 2*n elements to the string, as long as the string is smaller)
+         */
+        TestSet(String left, String right, int n, int max, String initial) {
+            for (int i = 0; i < n; i++) {
+                this.left.append(left);
+                this.right.append(right);
+            }
+            this.max = max;
+            testString = initial;
         }
 
-        return set.toArray(new String[0]);
+        /**
+         * Produce the next string, appending the pre and suffix
+         * @return the next string of the set
+         */
+        public String nextString() {
+            testString = left + testString + right;
+            return testString;
+        }
+
+        /**
+         * Has the Test String reached the maximal length?
+         * @return if length from string is bigger than max
+         */
+        public boolean finished() {
+            return testString.length() >= max;
+        }
+
     }
 
 }
