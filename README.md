@@ -12,13 +12,15 @@ After parsing all strings the values of the table are printed again as lists, wh
 The program takes up to three input arguments:
 
 1. Information on the set of test strings
-2. Which algorithm should be used; *naive* for the naive apporach, *bu* for the bottom-up and *td* for the top-down algorithm, top-down is the default.
+2. Which algorithm should be used; *naive* for the naive approach, *bu* for the bottom-up and *td* for the top-down algorithm, top-down is the default.
 3. The path to the text-file with the grammar, if none is passed then grammar.txt is used. 
 
 ### The test strings
 
-The program builds the set of substrings, according to the information provided by the user:
->prefix,suffix,n,maxlength[,initialstring]
+If only one string should be parsed, then starting the program with this string is sufficient.
+
+Otherwise, information on how to build the set of substrings must beprovided: 
+> prefix,suffix,n,maxlength[,initialstring]
 
 Between the arguments should be a comma, no space.
 Prefix is the left-hand side of the string, while suffix is the right-hand side.

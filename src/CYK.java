@@ -16,18 +16,18 @@ public class CYK {
             test = args[0].split(",");
         }
 
-        if (test.length < 4) {
-            System.out.println(" To run this program, you must give information on the set of Strings you want to parse:\n" +
-                    "prefix,suffix,n,maxlength[,initialstring]\nWhere prefix and suffix are appended n times to the left and right" +
-                    "of each new test string, until the strings reach max length. To test strings of the form a^nb^n " +
-                    "from size 100 to 5000 in steps of 100, run the program with a,b,50,5000 (be careful to add no " +
-                    "spaces.\nYou can further add an algorithm(naive, bottom up(bu)or top down(td)) as second " +
-                    "parameter, and the path to a file containing the rules of the grammar as third argument");
+        if (test.length == 1) {
+            // Test set consists of only one string
+            testSet = new TestSet(test[0], "", 1, test[0].length(),"");
+        } else if (test.length < 4) {
+            System.out.println(" To run this program, you must give information on the set of Strings you want to parse.\n" +
+                    "Read the README.md for further information on how to generate test sets of strings");
             return;
+        } else {
+            // Tests set consists of multiple strings
+            String initial = test.length > 4 ? test[4] : "";
+            testSet = new TestSet(test[0], test[1], Integer.parseInt(test[2]), Integer.parseInt(test[3]), initial);
         }
-
-        String initial = test.length > 4 ? test[4] : "";
-        testSet = new TestSet(test[0], test[1], Integer.parseInt(test[2]), Integer.parseInt(test[3]), initial);
 
         // set the algorithm and the input files (Grammar and test set of strings) as given arguments or default
         String algorithm = args.length > 1 ? args[1] : "td";
