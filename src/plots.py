@@ -55,7 +55,8 @@ counter_td_sg = [333300, 2666600, 8999900, 21333200, 41666500, 71999800, 1143331
 
 
 ## Plots for Time
-plt.figure(figsize=(15, 15))
+plt.figure(figsize=(10, 10))
+plt.suptitle("Running times for different configurations", fontsize=18)
 plt.subplot(221)
 plt.grid(axis='y')
 plt.title('Dyck language (bottom-up)')
@@ -99,7 +100,8 @@ plt.savefig('time.jpg')
 
 
 ## Plots for counters
-plt.figure(figsize=(15, 15))
+plt.figure(figsize=(10, 10))
+plt.suptitle("Counter for different configurations", fontsize=18)
 plt.subplot(221)
 plt.grid(axis='y')
 plt.title('Dyck language (bottom-up)')

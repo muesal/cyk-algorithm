@@ -1,7 +1,7 @@
 # cyk-algorithm
 This implementation of CYK takes information on how to build the set of test strings, an algorithm and an input grammar in CNF.
 It computes for each of the test strings whether the string is in the language of the given grammar.
-Each string is parsed 10 times, and the averaged time without the best and worst time is computed. 
+Each string is parsed 10 times, and the averaged time without the best and worst time is computed.
 The output is a table containing for each string its length, the averaged time in seconds, the counter and the computed value.
 
 After parsing all strings the values of the table are printed again as lists, which makes it easier to copy-paste them into a tool for creating graphs, e.g. in *plot.py*.
@@ -9,23 +9,31 @@ After parsing all strings the values of the table are printed again as lists, wh
 
 ##Usage
 
-The program takes up to three input arguments:
+Compile the code using
+>javac *.java
+
+The program can then be started with
+>java CYK [arguments]
+
+It takes up to three input arguments:
 
 1. Information on the set of test strings
 2. Which algorithm should be used; *naive* for the naive approach, *bu* for the bottom-up and *td* for the top-down algorithm, top-down is the default.
-3. The path to the text-file with the grammar, if none is passed then grammar.txt is used. 
+3. The path to the text-file with the grammar, if none is passed then grammar.txt is used.
 
 ### The test strings
 
 If only one string should be parsed, then starting the program with this string is sufficient.
+For example, to parse "(())" with the bottom-up parser and the Dyck grammar type:
+>javac CYK '(())' bu
 
-Otherwise, information on how to build the set of substrings must beprovided: 
-> prefix,suffix,n,maxlength[,initialstring]
+Otherwise, information on how to build the set of substrings must be provided:
+> prefix,suffix,n,max_length[,initial_string]
 
 Between the arguments should be a comma, no space.
 Prefix is the left-hand side of the string, while suffix is the right-hand side.
 For each new String, they both get appended resp. prepended n times.
-The strings are generated as long as the last generated string is smaller than maxlength.
+The strings are generated as long as the last generated string is smaller than max_length.
 If the string should contain anything else than the suffix and prefix, use the optional initial string, which will be in the center of the string.
 
 To generate a set of strings of the form "((..))" from size 100 to 5000 in steps of 100 use;
