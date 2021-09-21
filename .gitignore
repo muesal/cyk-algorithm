@@ -25,3 +25,5 @@ hs_err_pid*
 cyk/*
 out/*
 src/.vscode/*
+*.aux
+*.iml
