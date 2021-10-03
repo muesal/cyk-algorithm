@@ -31,7 +31,7 @@ public class CYK {
 
         // set the algorithm and the input files (Grammar and test set of strings) as given arguments or default
         String algorithm = args.length > 1 ? args[1] : "td";
-        String grammar_file = args.length > 2 ? args[2] : "grammar.txt";
+        String grammar_file = args.length > 2 ? args[2] : "parantheses.txt";
 
 
         // construct grammar and test set from the input files, initialise parser with grammar
@@ -68,6 +68,8 @@ public class CYK {
         ArrayList<Long> duration = new ArrayList<>();
         ArrayList<Boolean> truth = new ArrayList<>();
 
+        int iterations = 5;
+
         // parse and measure all strings
         while (!testSet.finished()) {
             String s = testSet.nextString();
@@ -78,10 +80,10 @@ public class CYK {
             // initialize variables and arrays
             boolean truth_value = false;
             Instant start;
-            long[] end = new long[10];
+            long[] end = new long[iterations];
 
-            // parse the string ten times, to get the average time passed
-            for (int j = 0; j < 10; j++) {
+            // parse the string iteration times, to get the average time passed
+            for (int j = 0; j < iterations; j++) {
                 // start time measurement
                 start = Instant.now();
 
@@ -89,7 +91,7 @@ public class CYK {
                 truth_value = parser.parse(algorithm);
 
                 // compute duration of execution
-                end[j] = Duration.between(start, Instant.now()).toSeconds();
+                end[j] = Duration.between(start, Instant.now()).toMillis();
             }
 
             // remove best and worst time (min and max), compute average

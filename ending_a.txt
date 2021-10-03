@@ -1,0 +1,5 @@
+S BA
+B BB
+B b
+B a
+A a

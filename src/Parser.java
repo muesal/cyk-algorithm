@@ -132,6 +132,7 @@ public class Parser {
      * @return whether a can produce the substring
      */
     private boolean parseTD(int a, int i, int j) {
+        counter++;
         if (!tab_set[a][i][j]) {
             // cell has not yet been computed, but will now -> set tab_set to true
             tab_set[a][i][j] = true;
@@ -149,7 +150,6 @@ public class Parser {
                 // iterate through all rules of non-terminal A, for every rule try every splitting point k.
                 for (Integer[] rule : grammar.getRules(a)) {
                     for (int k = 0; k < j; k++) {
-                        counter++;
                         // check whether first letter can produce substring i till k and second i+k+1 till j-k-1
                         tab[a][i][j] = tab[a][i][j] ||
                                 (parseTD(rule[0], i, k) && parseTD(rule[1], i + k + 1, j - k - 1));
