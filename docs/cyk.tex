@@ -1,0 +1,44 @@
+%% ----------------------------------------------------------------
+%% cyk.tex -- main
+%% ----------------------------------------------------------------
+
+\documentclass[10pt]{article}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{mathtools}
+\usepackage{color}
+\usepackage{graphicx}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+\floatname{algorithm}{Algorithm}
+\newcommand{\todo}[1]{{\color{red}#1}}
+
+%% ----------------------------------------------------------------
+
+\title{CockeYoungerKasami}
+\author{Salome Müller}
+\date{October 1, 2021}
+
+\begin{document}
+
+%% Make the title
+\maketitle
+
+%% Write the abstract
+\begin{abstract}
+    \todo{Summarize Introduction to 2-3 sentences.}
+\end{abstract}
+
+\pagebreak
+\tableofcontents
+\pagebreak
+
+
+%% Include all chapters
+\input{./Chapters/Introduction}
+\input{./Chapters/Background}
+\todo{Add a chapter about the enhancements which are made in step 3}
+\input{./Chapters/Evaluation}
+\input{./Chapters/Conclusion}
+
+\end{document}

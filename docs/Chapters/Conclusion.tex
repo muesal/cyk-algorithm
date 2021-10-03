@@ -1,0 +1,12 @@
+\section{Conclusion}
+
+\todo{summarize the outcome of the experiments and draw some further conclusions.}
+
+Botto-up is very steady, it's behavior can easily be predicted, as it is mainly dependent on the length of the input string.
+Top-down on the other hand, since it only looks at subproblems that are needed to find the optimal solution, can be a lot faster.
+When the rules of the grammar are in the correct order, i.e., in an order such that the rules used for optimal solutions are considered first, and the splitting points to find said solutions are low, then this parser will yield very good running times.
+If neither is the case, it can be a lot slower than bottom-up, since bottom-up fills the cells in a structured way and thus accesses the cells less often.
+Top down may access the same cell a lot of times, when the same subproblem occurs very often, resulting in a bad.
+
+\todo{Bibliography. Cited works are mainly both books used in the lecture.}
+
