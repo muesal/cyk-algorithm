@@ -68,7 +68,7 @@ public class CYK {
         ArrayList<Long> duration = new ArrayList<>();
         ArrayList<Boolean> truth = new ArrayList<>();
 
-        int iterations = 5;
+        int iterations = 10;
 
         // parse and measure all strings
         while (!testSet.finished()) {
@@ -91,27 +91,35 @@ public class CYK {
                 truth_value = parser.parse(algorithm);
 
                 // compute duration of execution
-                end[j] = Duration.between(start, Instant.now()).toMillis();
+                end[j] = Duration.between(start, Instant.now()).toSeconds();
             }
 
-            // remove best and worst time (min and max), compute average
-            long min = Arrays.stream(end).min().orElse(-1);
-            long max = Arrays.stream(end).max().orElse(-1);
-            long end_sum = 0;
-            long end_elements = 0;
+            long end_average;
 
-            for (long l : end) {
-                if (l == min) {
-                    min = -1; // in case more than one element is the same as min
-                } else if (l == max) {
-                    max = -1; // in case mor then one element is max
-                } else {
-                    end_elements++;
-                    end_sum += l;
+            if (iterations == 1) {
+                end_average = end[0];
+            } else if (iterations == 2) {
+                end_average = (end[0] + end[1]) / 2;
+            } else {
+                // remove best and worst time (min and max), compute average
+                long min = Arrays.stream(end).min().orElse(-1);
+                long max = Arrays.stream(end).max().orElse(-1);
+                long end_sum = 0;
+                long end_elements = 0;
+
+                for (long l : end) {
+                    if (l == min) {
+                        min = -1; // in case more than one element is the same as min
+                    } else if (l == max) {
+                        max = -1; // in case mor then one element is max
+                    } else {
+                        end_elements++;
+                        end_sum += l;
+                    }
+
                 }
-
+                end_average = end_sum / end_elements;
             }
-            long end_average = end_sum / end_elements;
 
             // print result
             System.out.printf("|  %-15d|  %-15d|  %-7b\n", end_average, Parser.counter, truth_value);

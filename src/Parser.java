@@ -54,7 +54,7 @@ public class Parser {
             }
         } else {
             // A -> BC => B must form to any left part (i-k), C the corresponding right part (k-j) 
-            // iterate through all rules of nonterminal A, for every rule try every splitting point k.
+            // iterate through all rules of non-terminal A, for every rule try every splitting point k.
             for (Integer[] rule : grammar.getRules(non_terminal)) {
                 for (int k = i + 1; k < j; k++) {
                     if (parseNaive(rule[0], i, k) && parseNaive(rule[1], k, j)) return true;
@@ -91,6 +91,7 @@ public class Parser {
                 // a = non-terminal
                 for (int a = 0; a < rules.length; a++) {
                     // rule = every non-terminal rule of a
+                    //rules_of_a:
                     for (Integer[] rule : rules[a]) {
                         // k = splitting point
                         for (int k = 0; k < j; k++) {
@@ -99,6 +100,7 @@ public class Parser {
                             if(tab[rule[0]][i][k] && tab[rule[1]][i + k + 1][j - k - 1]) {
                                 tab[a][i][j] = true;
                                 break;
+                                // break rules_of_a; This would make the algorithm about 15% more efficient
                             }
                         }
                     }
