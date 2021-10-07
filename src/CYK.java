@@ -2,6 +2,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 
 public class CYK {
 
@@ -32,12 +33,18 @@ public class CYK {
         // set the algorithm and the input files (Grammar and test set of strings) as given arguments or default
         String algorithm = args.length > 1 ? args[1] : "td";
         String grammar_file = args.length > 2 ? args[2] : "parantheses.txt";
+        String grammar_type = args.length > 3 ? args[3] : "cnf";
 
 
         // construct grammar and test set from the input files, initialise parser with grammar
         try {
-            grammar = new Grammar(grammar_file);
-            parser = new Parser(grammar);
+            if (Objects.equals(grammar_type, "cnf")) {
+                grammar = new Grammar_CNF(grammar_file);
+                parser = new Parser(grammar);
+            } else {
+                grammar = new Grammar_Linear(grammar_file, Objects.equals(grammar_type, "linear-cnf"));
+                parser = new Parser(grammar, Objects.equals(grammar_type, "linear-cnf"));
+            }
         } catch (Exception e) {
             // Something at opening one of the files went wrong, abort
             System.out.println("One of the input files could not be read/opened:");
@@ -91,7 +98,7 @@ public class CYK {
                 truth_value = parser.parse(algorithm);
 
                 // compute duration of execution
-                end[j] = Duration.between(start, Instant.now()).toSeconds();
+                end[j] = Duration.between(start, Instant.now()).toMillis()  ;
             }
 
             long end_average;

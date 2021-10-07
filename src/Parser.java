@@ -3,6 +3,7 @@ public class Parser {
 
     static long counter;
     Grammar grammar;
+    boolean linear = false;
     char[] input;
     boolean[][][] tab; // used in top-down (and buttom-up)
     boolean[][][] tab_set; // used in top-down (and buttom-up)
@@ -16,6 +17,11 @@ public class Parser {
         this.grammar = grammar;
     }
 
+    Parser(Grammar grammar, boolean linear) {
+        this.grammar = grammar;
+        this.linear = linear;
+    }
+
     /**
      * Parse method of the grammar. Parses the input string with the chosen algorithm
      *
@@ -27,6 +33,7 @@ public class Parser {
         counter = 0;
 
         // parse with the chosen algorithm and return result
+        // TODO: für lineares grammar hier neue option hinzufügen
         switch (parser) {
             case "naive":
                 return parseNaive(0, 0, input.length);
