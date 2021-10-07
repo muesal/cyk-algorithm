@@ -8,6 +8,7 @@ public class Grammar_CNF extends Grammar {
 
     Grammar_CNF(String input_file)  throws IOException {
         super(input_file);
+        form = "cnf";
     }
 
     /**
@@ -34,7 +35,8 @@ public class Grammar_CNF extends Grammar {
         while ((line = br.readLine()) != null) {
 
             rule = line.split(" ");
-            if (rule.length == 2) { // ignore empty / wrong formatted lines
+            // ignore empty / wrong formatted lines
+            if (rule.length == 2 && rule[0].length() == 1) {
 
                 // get number of left-hand side or add to list of non_terminals
                 if (!non_terminals.containsKey(rule[0].charAt(0))) {
@@ -97,7 +99,6 @@ public class Grammar_CNF extends Grammar {
         }
 
         // Convert the non-terminal rules to Array
-        ArrayList<Integer[][]> non_term = new ArrayList<>();
         this.rules = new Integer[nr_non_terminals][][];
         for (int i = 0; i < nr_non_terminals; i++) {
             this.rules[i] = rules.get(i).toArray(new Integer[0][0]);
