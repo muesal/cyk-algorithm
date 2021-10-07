@@ -7,8 +7,7 @@ import java.util.HashMap;
 public class Grammar_CNF extends Grammar {
 
     Grammar_CNF(String input_file)  throws IOException {
-        super(input_file);
-        form = "cnf";
+        super(input_file, "cnf");
     }
 
     /**

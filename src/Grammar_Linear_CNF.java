@@ -4,23 +4,22 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Grammar_Linear extends Grammar {
+public class Grammar_Linear_CNF extends Grammar{
 
 
     /**
      * Standard compiler (pares the grammar form the input file), transform to cnf says whether it should be transformed
      * or be kept as linear grammar
-     *
-     * @param input_file       txt file containing the rules
+     * @param input_file txt file containing the rules
      * @throws IOException if the file cannot be found or read
      */
-    Grammar_Linear(String input_file) throws IOException {
-        super(input_file, "linear");
+    Grammar_Linear_CNF(String input_file)  throws IOException {
+        super(input_file, "cnf");
     }
 
     /**
-     * Initialise the grammar, by constructing the grammars terminals and non-terminal rules using the provided input file
-     *
+     * parse the grammar, such that it is in CNF form. Therefore, all terminals which appear in a non-terminal rule,
+     *      * are also stored as non-terminals, and the terminal rule of them pointing on themselves is added.
      * @param input_file the path to the txt file, where the rules are written line by line
      * @throws IOException if something with opening and reading the input file does not work as expected
      */
@@ -43,7 +42,7 @@ public class Grammar_Linear extends Grammar {
 
             rule = line.split(" ");
             // ignore empty / wrong formatted lines
-            if (rule.length == 2 && rule[0].length() == 1 && Character.isUpperCase(rule[0].charAt(0))) {
+            if (rule.length == 2 && rule[0].length() == 1 && Character.isUpperCase(rule[0].charAt(0)) ) {
 
                 // get number of left-hand side or add to list of non_terminals
                 if (!non_terminals.containsKey(rule[0].charAt(0))) {
@@ -87,22 +86,36 @@ public class Grammar_Linear extends Grammar {
                             }
 
                             // second char is terminal
-                            // add to terminals if necessary
-                            if (!terminal_rules_term.containsKey(char2)) {
-                                terminal_rules_term.put(char2, new ArrayList<>());
+                            if (!non_terminals.containsKey(char2)) {
+                                // Add terminal to the non-terminals. This works, since it is lowercase, thus cannot be a duplicate
+                                non_terminals.put(char2, nr_non_terminals);
+                                rules.add(nr_non_terminals, new ArrayList<>());
+                                terminal_rules_lit.add(nr_non_terminals, new ArrayList<>());
+
+                                // Add the rule to the terminal rules (a->a)
+                                terminal_rules_lit.get(nr_non_terminals).add(char2);
+                                if (!terminal_rules_term.containsKey(char2)) {
+                                    terminal_rules_term.put(char2, new ArrayList<>());
+                                }
+                                terminal_rules_term.get(char2).add(nr_non_terminals);
+                                nr_non_terminals++;
                             }
 
-                            // add rule to set of non-terminal rules
-                            rules.get(left).add(new Integer[]{
-                                    non_terminals.get(char1),
-                                    (int) char2,
-                                    0, 1} // first is non-terminal, second terminal
-                            );
-
                         } else {
-                            // first char is terminal
-                            if (!terminal_rules_term.containsKey(char1)) {
-                                terminal_rules_term.put(char1, new ArrayList<>());
+
+                            if (!non_terminals.containsKey(char1)) {
+                                // Add terminal to the non-terminals. This works, since it is lowercase, thus cannot be a duplicate
+                                non_terminals.put(char1, nr_non_terminals);
+                                rules.add(nr_non_terminals, new ArrayList<>());
+                                terminal_rules_lit.add(nr_non_terminals, new ArrayList<>());
+
+                                // Add the rule to the terminal rules (a->a)
+                                terminal_rules_lit.get(nr_non_terminals).add(char1);
+                                if (!terminal_rules_term.containsKey(char1)) {
+                                    terminal_rules_term.put(char1, new ArrayList<>());
+                                }
+                                terminal_rules_term.get(char1).add(nr_non_terminals);
+                                nr_non_terminals++;
                             }
 
                             // second char is non-terminal
@@ -113,14 +126,13 @@ public class Grammar_Linear extends Grammar {
                                 terminal_rules_lit.add(nr_non_terminals, new ArrayList<>());
                                 nr_non_terminals++;
                             }
-
-                            // add rule to set of non-terminal rules
-                            rules.get(left).add(new Integer[]{
-                                    (int) char1,
-                                    non_terminals.get(char2),
-                                    1, 0}  // first is terminal, second non-terminal
-                            );
                         }
+
+                        // add rule to set of non-terminal rules
+                        rules.get(left).add(new Integer[]{
+                                non_terminals.get(char1),
+                                non_terminals.get(char2)}
+                        );
                     }
 
                 }

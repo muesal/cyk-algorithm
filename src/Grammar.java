@@ -10,10 +10,6 @@ public abstract class Grammar {
 
     String form;
 
-    Grammar(String input_file) throws IOException {
-        parse_grammar(input_file);
-    }
-
     Grammar(String input_file, String form) throws IOException {
         this.form = form;
         parse_grammar(input_file);

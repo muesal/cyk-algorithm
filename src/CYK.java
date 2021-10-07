@@ -2,7 +2,6 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Objects;
 
 public class CYK {
 
@@ -38,13 +37,15 @@ public class CYK {
 
         // construct grammar and test set from the input files, initialise parser with grammar
         try {
-            if (Objects.equals(grammar_type, "cnf")) {
-                grammar = new Grammar_CNF(grammar_file);
-                parser = new Parser(grammar);
+            if (grammar_type.equals("linear-cnf")) {
+                grammar = new Grammar_Linear_CNF(grammar_file);
+            } else if (grammar_type.equals("linear")){
+                grammar = new Grammar_Linear(grammar_file);
             } else {
-                grammar = new Grammar_Linear(grammar_file, Objects.equals(grammar_type, "linear-cnf"));
-                parser = new Parser(grammar, Objects.equals(grammar_type, "linear-cnf"));
+                grammar = new Grammar_CNF(grammar_file);
             }
+
+            parser = new Parser(grammar);
         } catch (Exception e) {
             // Something at opening one of the files went wrong, abort
             System.out.println("One of the input files could not be read/opened:");
@@ -62,10 +63,13 @@ public class CYK {
      */
     private static void parse(String algorithm) {
         // print info and head of table
+        int iterations = 10;
+
+
         String alg = algorithm.equals("naive") ? "naive" : algorithm.equals("bu") ? "bottom-down" : "top-down";
-        System.out.println("\nStarting computation with the " + alg + " algorithm input strings up to length " +
-                testSet.max + ". Every string will be parsed 10 times, and the average time computed.\nThe" +
-                "computed data will be printed again in the end, such that it is easier to copy-paste in order to" +
+        System.out.println("\nStarting computation with the " + alg + " algorithm for input strings up to length " +
+                testSet.max + ". Every string will be parsed " + iterations +
+                "computed data will be printed again in the end, such that it is easier to copy-paste in order to " +
                 "visualize it with another tool.\n");
         System.out.printf("%-7s| %-15s | %-15s | %-7s \n", "Length", "Time in seconds", "Counter", "Truth-Value");
         System.out.print("---------------------------------------------------------\n");
@@ -75,7 +79,6 @@ public class CYK {
         ArrayList<Long> duration = new ArrayList<>();
         ArrayList<Boolean> truth = new ArrayList<>();
 
-        int iterations = 10;
 
         // parse and measure all strings
         while (!testSet.finished()) {
