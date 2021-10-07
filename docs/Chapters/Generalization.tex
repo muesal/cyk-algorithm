@@ -1,0 +1,145 @@
+\section{Generalization and Specialization}
+
+\todo{adapt intro to section to whether or not the correction was also implemented}
+In this section we try a specialization of the CYK algorithm. \todo{and generatlization, if we have time to do so}
+Instead of grammars in CNF, we will try grammars in different forms, namely \textbf{linear grammars}.
+We first convert these grammars to CNF and compare the running times to the previous experiments.
+In a second step, we adapt the CYK algorithm to run on those grammars, and compare the efficiency of both approaches.
+
+\subsection{Specialization with Linear Grammars}
+
+\subsubsection{Linear Grammars}
+Similar to CNF, linear grammars also have certain restrictions on how the productions may look like.
+They have, however, only one restriction; each production may at most have one non-terminal variable on its right-hand side.
+
+We use \textbf{linear context free-grammars in Chomsky normal form} to generalize the CYK algorithm.
+These are grammars that are linear and where all productions have either one terminal symbol, or a non-terminal variable and a terminal symbol on their right-hand side.
+The example we gave in\ref{subsec:exemplary_grammar}~can be easily transformed into linear CNF, by removing non-terminal variable $A$
+\begin{align*}
+    S&\rightarrow aB \\
+    B&\rightarrow Sb|b \\
+\end{align*}
+
+
+\subsubsection{Transform Linear grammars to CNF}
+A linear grammar can be easily transformed into CNF, by introducing a non-terminal variable $a_T$ for each terminal variable $a$ appearing in a non-terminal production, and adding the terminal production $a_T\rightarrow a$ to the set of productions.
+For the exemplary grammar this would give the productions
+\begin{align*}
+    S&\rightarrow a_T B \\
+    B&\rightarrow Sb|b \\
+    a_T&\rightarrow a
+\end{align*}
+
+By adding non-terminal variables to the grammar, we expand one dimension of the memoization table $tab$.
+Since those have no non-terminal productions, for both the top-down and bottom-up algorithm no additional rules are tested.
+However, the cells for those non-terminals may be accessed often for strings of length bigger than 1, always returning false.
+These unnecessary calls may extend the running time.
+We thus expect tests runs on this grammar yielding similar running times than for equivalent grammars already in CNF..
+If we do not transform the grammar into CNF but instead adapt the CYK-algorithm, this extension may be avoided.
+
+\subsubsection{Adapt CYK to Linear Grammars}
+Grammars in Linear CNF have two types of rules; terminal rules and non terminal rules.
+Similar to the non-specialized approach, we can use the terminal rules to determine, which non-terminal variables can derive which terminal symbols.
+The non-terminal rules are different, and require the algorithm to act differently.
+
+They all have exactly on terminal and one non-terminal variable on their right hand side.
+In contrast to the non-specialized approaches, we do not need to look at multiple splitting points, to determine whether a non-terminal rule applied on a given non-terminal variable can derive a string.
+If the first variable of the rules right-hand side is the terminal symbol, the the right hand side must be able to derive all symbols of the substring, except the first.
+Algorithm \ref{alg:bu_linear}~and \ref{alg:td_linear}~show how this can be applied to bottom-up and top-down respectively.
+
+\begin{algorithm}[H]
+    \caption{Linear Bottom-Up CYK Parser}
+    \label{alg:bu_linear}
+    \begin{algorithmic}[1]
+        \Function{Lin-Bottom-Up}{input string $s[1..n]$}
+        \State allocate table $tab[|V|][n][n]$ initialized with false
+        \State counter $\leftarrow$ 0
+    
+        \For{$i \in {1,\dots,n}$}
+            \For{${A: A\rightarrow s[i]\in P}$}
+                \State $tab[A,i,1] \leftarrow$ true
+            \EndFor
+        \EndFor
+
+        \For{$j\in {2,\dots,n}$}
+            \For{$i\in {1,\dots,n-j+1}$}
+                \For{$(A\rightarrow v_1v_2) \in P$}
+                    \State counter $\leftarrow$ counter + 1
+                    \If {$v_1$ is terminal symbol}
+                        \If {$v_1 = s[i]$ \textbf{and} $tab[v_2,i+1,j-1]$}
+                            \State $tab[A,i,j]\leftarrow$ true
+                            \State break loop
+                        \EndIf
+                    \Else
+                        \If {$v_2 = s[i+j]$ \textbf{and} $tab[v_1,i,j-1]$}
+                            \State $tab[A,i,j]\leftarrow$ true
+                            \State break loop
+                        \EndIf
+                    \EndIf
+                \EndFor
+            \EndFor
+        \EndFor
+
+        \State \textbf{return} $tab[S,1,n]$
+        \EndFunction
+    \end{algorithmic}
+\end{algorithm}
+
+\todo{explain bottom up in words}
+
+\begin{algorithm}[H]
+    \caption{Linear Top-Down Parser}
+    \label{alg:td_linear}
+    \begin{algorithmic}[1]
+        \Function{Top-Down-Parse}{input string $s[1..n]$}
+        \State allocate global table $tab[|V|][n][n]$ initialized with null
+        \State counter $\leftarrow$ 0
+        \State \Call{Lin-Top-Down-Parser}{$S$, $1$, $n$}
+        \State \textbf{return} $tab[S,1,n]$
+        \EndFunction
+        \Function{Lin-Top-Down}{non-terminal A, int i, int j}
+            \State counter $\leftarrow$ counter + 1
+
+            \If{$tab[A,i.j]=$\texttt{null}}
+                \State \textbf{return} $tab[A,i,j]$
+            \EndIf
+
+            \State $tab[A,i.j]\leftarrow$ false
+
+            \If{$j = 0$}
+                \If{$(A\rightarrow s[i])\in P$}
+                    \State $tab[A,i.j]\leftarrow$ true
+                \EndIf
+            \Else
+                \For{$(A\rightarrow v_1v_2) \in P$}
+                    \If {$v_1$ is terminal symbol}
+                        \If {$v_1 = s[i]$ \textbf{and} \Call{Lin-Top-Down}{$C$, $i+1$, $j-1$}}
+                            \State $tab[A,i,j]\leftarrow$ true
+                            \State break loop
+                        \EndIf
+                    \Else
+                        \If {$v_2 = s[i+j]$ \textbf{and} \Call{Lin-Top-Down}{$C$, $i$, $j-1$}}
+                            \State $tab[A,i,j]\leftarrow$ true
+                            \State break loop
+                        \EndIf
+                    \EndIf
+                \EndFor
+            \EndIf
+
+            \State \textbf{return} $tab[A,i.j]$
+        \EndFunction
+    \end{algorithmic}
+\end{algorithm}
+\todo{explain top down. State, that first function is the same, ust calls lin top down instead.}
+
+
+\todo{state expectations:
+We expect this algorithms to be better, than the transformation to cnf. It has less rules, less variables, and only one splitting point to consdier per rule. This makes it more efficient.}
+
+
+
+
+
+
+\todo{Generalization: Error correction (hahahaha)}
+

@@ -73,11 +73,36 @@ We expect the parsers to yield similar running times on this grammar and for thi
 since the arrangement of the terminal symbols is very similar, with a and b instead of opening and closing parentheses.
 The cases that should return \textit{false} are probably slower, since this grammar has one production more than the grammar for the \textit{Dyck language}.
 
+\subsection{ABC Grammar}
+The language of this grammar is more complicated to explain than the grammars before.
+The simplest grammar describing it is $G=(\{S\}, \{a,b,c\},P,S)$, where $P$ is:
+\begin{align*}
+    S&\rightarrow aSc|abSc|b\\
+\end{align*}
+The words in the corresponding language $L(G)$ can be divided into three parts:
+\begin{itemize}
+    \item The first part starts with an \lq a\rq, and  consists of \lq a\rq 's and \lq b\rq 's, such that the number of \lq a\rq 's is equal or bigger to the number of \lq b\rq 's. THere are never two \lq b\rq 's after each other without an \lq a\rq~in between.
+    \item In between the two parts is a \lq b\rq (this \lq b\rq~may follow right after a \lq b\rq~of the first part).
+    \item The third part consists only of \lq c\rq 's, the number of \lq c\rq 's is equal to the number of \lq a\rq 's in the first part.
+\end{itemize}
+
+We will use this grammar only to evaluate the specialization, therefore we transform it to the equivalent linear grammar $G=(\{A,B,S\}, \{a,b,c\}, P, S)$ with the productions:
+\begin{align*}
+    S&\rightarrow Ac|b\\
+    A&\rightarrow aS|aB\\
+    B&\rightarrow bS\\
+\end{align*}
+
+The strings we will test are of the form \lq abab..b..cc\rq, \lq aa..b..cc\rq~and the same with additional \lq a \rq~ and \lq c \rq in the front or end respectively.
+To test strings that do not yield the language we will add additional 
+
+
 \subsubsection{A Finite Language}
 \todo{come up with a finite language ?}
 
-\subsection{Experiments}
+\subsection{Evaluation of the conventional Implementation}
 We now show the results of experiments, using the grammars described, and analyze whether the algorithms behave as we expect them to behave.
+For these tests, the conventional algorithms as described in sections \ref{sec:top_down}~and \ref{sec:bottom_up}~where used.
 In order to get better results, for each input string the parser was run 10 times.
 The time showed in the plots is the average of the resulting running times, where the fastest and slowest times were excluded.
 
@@ -94,7 +119,7 @@ Figure~\ref{fig:t_dyck_bu} shows the running times of the bottom-up parser on di
 The strings were of length 100 to 5000, growing in steps of 100.
 As we assumed, the times are very similar for all four different sets of input strings.
 Parsing the strings of the form \lq((..))\rq~is a little faster.
-\todo{This may be, since... maybe this changes with the new brakpoint. analyse new plots. Otherwise consult one note}
+\todo{This may be, since... (consult one note)}
 
 The curves are asymptotically to $O(n^3)$, in fact, the yellow, blue and green line are very close to $6.4*10^{-10}*n^3$.
 
@@ -144,7 +169,7 @@ The parser is in fact a lot slower than it was before, thus the order of the pro
 The plot further shows that the order does not matter that much for the bottom-up parser.
 It has almost the same running time, than it had with the original ordering of the productions.
 
-\subsection{Strings starting and ending in a}
+\subsubsection{Strings starting and ending in a}
 
 The running times achieved, did not meat all expectations.
 Surprisingly, both the top-down and bottom-up algorithm performed very differently on the two grammars, being very fast at parsing for the grammar \textit{starting in a}, and slower for \textit{ending in a}.
@@ -219,7 +244,6 @@ This results in a very low amount of recursive calls.
 In fact, the number of calls on the recursive function is $\Theta(n)$ (figure~\ref{fig:c_sa_td}).
 As we argued in section~\ref{sec:top_down}, the upper bound for this number is $O(n^3)$.
 The numbers for the counter of bottom-up (repetitions of the inner most loop, i.e. over splitting points $k$) for parsing strings for the grammar starting in a, are somewhere in the middle of $n^2$ and $n^3$, still yielding relatively fast running times.
-\todo{adapt, if new break in bottom up is used.}
 
 \begin{figure}[h!]
     \centering
@@ -232,3 +256,13 @@ The numbers for the counter of bottom-up (repetitions of the inner most loop, i.
 
 
 
+\subsection{Evaluation of the Specialization with Linear Grammars}
+We start by running tests using the grammar parser, which transforms the linear grammar provided to CNF.
+When feeding the program the grammars from above transformed into linear grammar, the running times and counter are equal to using the grammar in CNF directly.
+This is, because the number of rules after the parser transformed it back to CNF is equal to the original grammar.
+
+We used the \textit{abc grammar} to compare the running times of transforming the grammar to CNF to the running time of the adapted CYK algorithm.
+
+\todo{the times for parantheses\_linear are exactly the same, counter is the very same, for both bottom up and top down.}
+
+\todo{run tests with parantheses grammar from last time this should yield very similar running times, }
