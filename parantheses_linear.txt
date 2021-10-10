@@ -1,5 +1,4 @@
-S SS
-S LA
-S L)
+S (A
+A )S
 A S)
-L (
+A )
