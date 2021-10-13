@@ -13,12 +13,11 @@ dyck_order =    False
 dyck_td =       False
 stupid =        False
 starting_td =   False
-ending_ab =     False
-ending_aa =     False
+ending =        True
 starting_bu =   False
-linear_cnf =    True
-linear_dyck =   True
-linear_abc =    True
+linear_cnf =    False
+linear_dyck =   False
+linear_abc =    False
 
 
 if (dyck_bu) :
@@ -177,70 +176,6 @@ if starting_td:
     plt.legend(loc='upper left')
     plt.savefig('t_sa_td_ser.jpg')
 
-if ending_ab:
-    # strings ending (ea) in a, bottom up, ms
-    #input: ba..ba resp. ab..ab
-    time_bu_ea = [2, 3, 11, 27, 64, 103, 133, 212, 303, 429, 561, 727, 917, 1032, 1292, 1575, 1922, 2392, 2903, 3268, 3836, 4993, 5658, 6459, 7684]
-    counter_bu_ea = [171600, 1353200, 4544800, 10746400, 20958000, 36179600, 57411200, 85652800, 121904400, 167166000, 222437600, 288719200, 367010800, 458312400, 563624000, 683945600, 820277200, 973618800, 1144970400, 1335332000, 1545703600, 1777085200, 2030476800, 2306878400, 2607290000]
-    time_bu_ea_w = [3, 5, 16, 25, 52, 90, 126, 187, 278, 369, 512, 642, 826, 1084, 1376, 1666, 2057, 2480, 3040, 3560, 4292, 4759, 5934, 6945, 6846]
-    counter_bu_ea_w = [171600, 1353200, 4544800, 10746400, 20958000, 36179600, 57411200, 85652800, 121904400, 167166000, 222437600, 288719200, 367010800, 458312400, 563624000, 683945600, 820277200, 973618800, 1144970400, 1335332000, 1545703600, 1777085200, 2030476800, 2306878400, 2607290000]
-
-    # strings ending (ea) in a, top down, with wrong input, ms
-    # input: ba..ba resp. ab..ab
-    time_td_ea = [1, 11, 20, 42, 97, 115, 176, 260, 372, 506, 676, 872, 1103, 1376, 1687, 2044, 2449, 2905, 3409, 3976, 4600, 5328, 6329, 6897, 7855]
-    counter_td_ea = [9901, 39801, 89701, 159601, 249501, 359401, 489301, 639201, 809101, 999001, 1208901, 1438801, 1688701, 1958601, 2248501, 2558401, 2888301, 3238201, 3608101, 3998001, 4407901, 4837801, 5287701, 5757601, 6247501]
-    time_td_ea_w = [2, 13, 18, 52, 82, 134, 193, 298, 431, 572, 773, 970, 1188, 1552, 1844, 2196, 2621, 3085, 3625, 4597, 4995, 5608, 6427, 7274, 8241]
-    counter_td_ea_w = [9901, 39801, 89701, 159601, 249501, 359401, 489301, 639201, 809101, 999001, 1208901, 1438801, 1688701, 1958601, 2248501, 2558401, 2888301, 3238201, 3608101, 3998001, 4407901, 4837801, 5287701, 5757601, 6247501]
-
-    plt.figure()
-    plt.grid(axis='y')
-    plt.title('Strings ending in a')
-    plt.xlabel('length')
-    plt.ylabel('time')
-    plt.plot(length_2, time_bu_ea, color='r',linestyle='-',label='bottom up, ba..ba')
-    plt.plot(length_2, time_td_ea, color='b',linestyle='-',label='top-down, ba..ba')
-    plt.plot(length_2, time_bu_ea_w, color='g',linestyle='-',label='bottom-up, ab..ab')
-    plt.plot(length_2, time_td_ea_w, color='y',linestyle='-',label='top-down, ab..ab')
-    plt.legend(loc='upper left')
-    plt.savefig('t_ea_td_bu.jpg')
-
-    fig, ax1 = plt.subplots()
-    ax1.set_xlabel('length')
-    ax1.set_ylabel('counter')
-    ax1.plot(length_2, counter_bu_ea, color='r',linestyle='-',label='bottom-up')
-    ax1.tick_params(axis='y', labelcolor='r')
-    ax2 = ax1.twinx()
-    ax2.plot(length_2, counter_td_ea, color='b',linestyle='-',label='top-down')
-    ax2.tick_params(axis='y', labelcolor='b')
-    fig.legend(loc='upper left')
-    plt.savefig('c_ea_td_bu.jpg')
-
-
-if ending_aa:
-    # strings ending in a, bottom up, bb..aa resp. aa..bb (length 2500)
-    time_bu_ea_ser = [2, 2, 10, 22, 51, 67, 106, 163, 256, 340, 488, 668, 779, 1042, 1345, 1639, 2018, 2459, 3005, 3507, 4185, 4976, 5616, 6369, 7369]
-    counter_bu_ea_ser = [171600, 1353200, 4544800, 10746400, 20958000, 36179600, 57411200, 85652800, 121904400, 167166000, 222437600, 288719200, 367010800, 458312400, 563624000, 683945600, 820277200, 973618800, 1144970400, 1335332000, 1545703600, 1777085200, 2030476800, 2306878400, 2607290000]
-    time_bu_ea_ser_w = [2, 4, 12, 29, 51, 75, 120, 178, 264, 373, 483, 630, 819, 1089, 1581, 1950, 2034, 2479, 3042, 3524, 4213, 4947, 5610, 6382, 7853]
-    counter_bu_se_ser_w = [171600, 1353200, 4544800, 10746400, 20958000, 36179600, 57411200, 85652800, 121904400, 167166000, 222437600, 288719200, 367010800, 458312400, 563624000, 683945600, 820277200, 973618800, 1144970400, 1335332000, 1545703600, 1777085200, 2030476800, 2306878400, 2607290000]
-
-    # strings ending in a, topd down, bb..aa resp. aa..bb (length 2500)
-    time_td_ea_ser = [2, 15, 18, 42, 71, 114, 176, 261, 371, 506, 670, 869, 1105, 1506, 1905, 2185, 2455, 2909, 3408, 3984, 4605, 5344, 6061, 6891, 7770]
-    counter_td_ea_ser = [9901, 39801, 89701, 159601, 249501, 359401, 489301, 639201, 809101, 999001, 1208901, 1438801, 1688701, 1958601, 2248501, 2558401, 2888301, 3238201, 3608101, 3998001, 4407901, 4837801, 5287701, 5757601, 6247501]
-    time_td_ea_ser_w = [2, 8, 19, 41, 69, 114, 183, 250, 357, 485, 644, 835, 1061, 1322, 1626, 1967, 2359, 2802, 3283, 3841, 4440, 5105, 5834, 6624, 7479]
-    counter_td_ea_ser_w = [9901, 39801, 89701, 159601, 249501, 359401, 489301, 639201, 809101, 999001, 1208901, 1438801, 1688701, 1958601, 2248501, 2558401, 2888301, 3238201, 3608101, 3998001, 4407901, 4837801, 5287701, 5757601, 6247501]
-
-    plt.figure()
-    plt.grid(axis='y')
-    plt.title('Strings ending in a')
-    plt.xlabel('length')
-    plt.ylabel('time')
-    plt.plot(length_2, time_bu_ea_ser, color='r',linestyle='-',label='bottom up, bb..aa')
-    plt.plot(length_2, time_td_ea_ser, color='b',linestyle='-',label='top-down, bb..aa')
-    plt.plot(length_2, time_bu_ea_ser_w, color='g',linestyle='-',label='bottom-up, aa..bb')
-    plt.plot(length_2, time_td_ea_ser_w, color='y',linestyle='-',label='top-down, aa..bb')
-    plt.legend(loc='upper left')
-    plt.savefig('t_ea_td_bu_ser.jpg')
-
 if starting_bu:
     # strings starting (sa) in a, bottom up, ms, length 5000
     # ab..ab
@@ -291,6 +226,64 @@ if starting_bu:
     plt.legend(loc='upper left')
     plt.savefig('t_sa_bu.jpg')
 
+if ending:
+    # strings ending (ea) in a, bottom up, ms
+    #input: ba..ba resp. ab..ab
+    time_bu_ea = [2, 3, 11, 27, 64, 103, 133, 212, 303, 429, 561, 727, 917, 1032, 1292, 1575, 1922, 2392, 2903, 3268, 3836, 4993, 5658, 6459, 7684]
+    counter_bu_ea = [171600, 1353200, 4544800, 10746400, 20958000, 36179600, 57411200, 85652800, 121904400, 167166000, 222437600, 288719200, 367010800, 458312400, 563624000, 683945600, 820277200, 973618800, 1144970400, 1335332000, 1545703600, 1777085200, 2030476800, 2306878400, 2607290000]
+    time_bu_ea_w = [3, 5, 16, 25, 52, 90, 126, 187, 278, 369, 512, 642, 826, 1084, 1376, 1666, 2057, 2480, 3040, 3560, 4292, 4759, 5934, 6945, 7684]
+    counter_bu_ea_w = [171600, 1353200, 4544800, 10746400, 20958000, 36179600, 57411200, 85652800, 121904400, 167166000, 222437600, 288719200, 367010800, 458312400, 563624000, 683945600, 820277200, 973618800, 1144970400, 1335332000, 1545703600, 1777085200, 2030476800, 2306878400, 2607290000]
+
+    # strings ending (ea) in a, top down, with wrong input, ms
+    # input: ba..ba resp. ab..ab
+    time_td_ea = [1, 11, 20, 42, 97, 115, 176, 260, 372, 506, 676, 872, 1103, 1376, 1687, 2044, 2449, 2905, 3409, 3976, 4600, 5328, 6329, 6897, 7855]
+    counter_td_ea = [9901, 39801, 89701, 159601, 249501, 359401, 489301, 639201, 809101, 999001, 1208901, 1438801, 1688701, 1958601, 2248501, 2558401, 2888301, 3238201, 3608101, 3998001, 4407901, 4837801, 5287701, 5757601, 6247501]
+    time_td_ea_w = [2, 13, 18, 52, 82, 134, 193, 298, 431, 572, 773, 970, 1188, 1552, 1844, 2196, 2621, 3085, 3625, 4597, 4995, 5608, 6427, 7274, 8241]
+    counter_td_ea_w = [9901, 39801, 89701, 159601, 249501, 359401, 489301, 639201, 809101, 999001, 1208901, 1438801, 1688701, 1958601, 2248501, 2558401, 2888301, 3238201, 3608101, 3998001, 4407901, 4837801, 5287701, 5757601, 6247501]
+
+    # strings ending in a, bottom up, bb..aa resp. aa..bb (length 2500)
+    time_bu_ea_ser = [2, 2, 10, 22, 51, 67, 106, 163, 256, 340, 488, 668, 779, 1042, 1345, 1639, 2018, 2459, 3005, 3507, 4185, 4976, 5616, 6369, 7369]
+    counter_bu_ea_ser = [171600, 1353200, 4544800, 10746400, 20958000, 36179600, 57411200, 85652800, 121904400, 167166000, 222437600, 288719200, 367010800, 458312400, 563624000, 683945600, 820277200, 973618800, 1144970400, 1335332000, 1545703600, 1777085200, 2030476800, 2306878400, 2607290000]
+    time_bu_ea_ser_w = [2, 4, 12, 29, 51, 75, 120, 178, 264, 373, 483, 630, 819, 1089, 1581, 1950, 2034, 2479, 3042, 3524, 4213, 4947, 5610, 6382, 7853]
+    counter_bu_se_ser_w = [171600, 1353200, 4544800, 10746400, 20958000, 36179600, 57411200, 85652800, 121904400, 167166000, 222437600, 288719200, 367010800, 458312400, 563624000, 683945600, 820277200, 973618800, 1144970400, 1335332000, 1545703600, 1777085200, 2030476800, 2306878400, 2607290000]
+
+    # strings ending in a, topd down, bb..aa resp. aa..bb (length 2500)
+    time_td_ea_ser = [2, 15, 18, 42, 71, 114, 176, 261, 371, 506, 670, 869, 1105, 1506, 1905, 2185, 2455, 2909, 3408, 3984, 4605, 5344, 6061, 6891, 7770]
+    counter_td_ea_ser = [9901, 39801, 89701, 159601, 249501, 359401, 489301, 639201, 809101, 999001, 1208901, 1438801, 1688701, 1958601, 2248501, 2558401, 2888301, 3238201, 3608101, 3998001, 4407901, 4837801, 5287701, 5757601, 6247501]
+    time_td_ea_ser_w = [2, 8, 19, 41, 69, 114, 183, 250, 357, 485, 644, 835, 1061, 1322, 1626, 1967, 2359, 2802, 3283, 3841, 4440, 5105, 5834, 6624, 7479]
+    counter_td_ea_ser_w = [9901, 39801, 89701, 159601, 249501, 359401, 489301, 639201, 809101, 999001, 1208901, 1438801, 1688701, 1958601, 2248501, 2558401, 2888301, 3238201, 3608101, 3998001, 4407901, 4837801, 5287701, 5757601, 6247501]
+
+    plt.figure()
+    plt.grid(axis='y')
+    plt.title('Strings ending in a')
+    plt.xlabel('length')
+    plt.ylabel('time')
+    plt.plot(length_2, time_bu_ea, color='r',linestyle='-',label='bottom up, ba..ba')
+    plt.plot(length_2, time_td_ea, color='b',linestyle='-',label='top-down, ba..ba')
+    plt.plot(length_2, time_bu_ea_w, color='g',linestyle='-',label='bottom-up, ab..ab')
+    plt.plot(length_2, time_td_ea_w, color='y',linestyle='-',label='top-down, ab..ab')
+    plt.plot(length_2, time_bu_ea_ser, color='r',linestyle='-',label='bottom up, bb..aa')
+    plt.plot(length_2, time_td_ea_ser, color='b',linestyle='-',label='top-down, bb..aa')
+    plt.plot(length_2, time_bu_ea_ser_w, color='g',linestyle='-',label='bottom-up, aa..bb')
+    plt.plot(length_2, time_td_ea_ser_w, color='y',linestyle='-',label='top-down, aa..bb')
+    plt.legend(loc='upper left')
+    plt.savefig('t_ea_td_bu.jpg')
+
+    fig, ax1 = plt.subplots()
+    ax1.set_xlabel('length')
+    ax1.set_ylabel('counter')
+    l1 = ax1.plot(length_2, counter_bu_ea, color='r',linestyle='-',label='bottom-up')
+    ax1.tick_params(axis='y', labelcolor='r')
+    ax2 = ax1.twinx()
+    l2 = ax2.plot(length_2, counter_td_ea, color='b',linestyle='-',label='top-down')
+    ax2.tick_params(axis='y', labelcolor='b')
+
+    leg = l1 + l2
+    labs = [l.get_label() for l in leg]
+    ax1.legend(leg, labs, loc='upper left')
+    plt.title('Strings ending in a')
+    plt.savefig('c_ea_td_bu.jpg')
+
 if linear_cnf:
     # Dyck Bottom-Up, Linear-cnf
     #((...))
@@ -315,12 +308,11 @@ if linear_cnf:
     counter_bu_lin_1_lin = [14850, 59700, 134550, 239400, 374250, 539100, 733950, 958800, 1213650, 1498500, 1813350, 2158200, 2533050, 2937900, 3372750, 3837600, 4332450, 4857300, 5412150, 5997000, 6611850, 7256700, 7931550, 8636400, 9371250, 10136100, 10930950, 11755800, 12610650, 13495500, 14410350, 15355200, 16330050, 17334900, 18369750, 19434600, 20529450, 21654300, 22809150, 23994000, 25208850, 26453700, 27728550, 29033400, 30368250, 31733100, 33127950, 34552800, 36007650, 37492500]
 
     fig, ax1 = plt.subplots()
-    fig.title = 'Dyck Grammar, linear vs. CNF'
     ax1.set_xlabel('length')
     ax1.set_ylabel('time')
-    ax1.plot(length, time_bu_1, color='r',linestyle='-',label='CNF')
-    ax1.plot(length, time_bu_lin_1, color='r',linestyle='--',label='linear transformed to CNF')
-    ax1.plot(length, time_bu_lin_1_lin, color='r',linestyle=':',label='linear')
+    l1 = ax1.plot(length, time_bu_1, color='r',linestyle='-',label='CNF')
+    l2 = ax1.plot(length, time_bu_lin_1, color='r',linestyle='--',label='linear transformed to CNF')
+    l3 = ax1.plot(length, time_bu_lin_1_lin, color='r',linestyle=':',label='linear')
     ax1.tick_params(axis='y', labelcolor='r')
     ax2 = ax1.twinx()
     ax2.set_ylabel('counter')
@@ -328,7 +320,11 @@ if linear_cnf:
     ax2.plot(length, counter_bu_lin_1, color='b',linestyle='--')
     ax2.plot(length, counter_bu_lin_1_lin, color='b',linestyle=':')
     ax2.tick_params(axis='y', labelcolor='b')
-    fig.legend(loc='upper left')
+
+    leg = l1 + l2 + l3
+    labs = [l.get_label() for l in leg]
+    ax1.legend(leg, labs, loc='upper left')
+    plt.title('Dyck Grammar, linear vs. CNF')
     plt.savefig('t_c_dyck_lin_cnf.jpg')
 
     #add a plot for time and counter, for both this and the non-linear implementation       q
@@ -345,7 +341,6 @@ if linear_abc:
     # abab..bc..cc
     t_abc_lin_ab_c = [0, 0, 1, 2, 3, 4, 7, 10, 12, 14, 15, 18, 21, 25, 29, 34, 39, 43, 49, 56, 64, 71, 79, 87, 96, 106, 117, 125, 131, 144, 155, 168, 177, 193, 207, 247, 241, 250, 265, 272, 289, 306, 323, 344, 352, 363, 386, 398, 421, 450, 442]
     c_abc_lin_ab_c = [20167, 79534, 178105, 315880, 492859, 709042, 964429, 1259020, 1592815, 1965814, 2378017, 2829424, 3320035, 3849850, 4418869, 5027092, 5674519, 6361150, 7086985, 7852024, 8656267, 9499714, 10382365, 11304220, 12265279, 13265542, 14305009, 15383680, 16501555, 17658634, 18854917, 20090404, 21365095, 22678990, 24032089, 25424392, 26855899, 28326610, 29836525, 31385644, 32973967, 34601494, 36268225, 37974160, 39719299, 41503642, 43327189, 45189940, 47091895, 49033054, 51013417]
-    #TODO: add linear-cnf for this test set
 
     # aa..b ..cc
     t_abc_lin_aa = [0, 1, 1, 2, 3, 5, 8, 11, 14, 16, 17, 20, 24, 28, 33, 38, 43, 49, 54, 61, 70, 79, 87, 96, 107, 115, 130, 142, 150, 177, 397, 197, 200, 221, 230, 247, 272, 282, 294, 323, 323, 366, 400, 387, 576, 430, 432, 482, 485, 490]
@@ -361,6 +356,9 @@ if linear_abc:
     t_abc_cnf_aa_a = [5, 5, 17, 40, 77, 116, 159, 234, 331, 450, 591, 759, 960, 1211, 1470, 1773, 2126, 2528, 2960, 3444, 4007, 4607, 5296, 6034, 6859, 7686, 8628, 9660, 10726, 11906, 13183, 14459, 15850, 17372, 18951, 20618, 22354, 24218, 26177, 28349, 30417, 32799, 35136, 37667, 40300, 43018, 45840, 48834, 51836, 55069]
     c_abc_cnf_aa_a = [704854, 5484704, 18339554, 43269404, 84274254, 145354104, 230508954, 343738804, 489043654, 670423504, 891878354, 1157408204, 1471013054, 1836692904, 2258447754, 2740277604, 3286182454, 3900162304, 4586217154, 5348347004, 6190551854, 7116831704, 8131186554, 9237616404, 10440121254, 11742701104, 13149355954, 14664085804, 16290890654, 18033770504, 19896725354, 21883755204, 23998860054, 26246039904, 28629294754, 31152624604, 33820029454, 36635509304, 39603064154, 42726694004, 46010398854, 49458178704, 53074033554, 56861963404, 60825968254, 64970048104, 69298202954, 73814432804, 78522737654, 83427117504]
 
+    ref_lin = list(map(lambda x: x ** 2 / 10 ** 5 * 1.8, length))
+    ref_cnf = list(map(lambda x: x ** 3 / 10 ** 6 * 0.45, length))
+
     plt.figure()
     plt.grid(axis='y')
     plt.title('Linear ABC Grammar (bottom-up)')
@@ -370,6 +368,7 @@ if linear_abc:
     plt.plot(length_ab, t_abc_lin_ab_c, color='b',linestyle='-',label='lin ab..bc..c')
     plt.plot(length, t_abc_lin_aa, color='g',linestyle='-',label='lin aa..b..cc')
     plt.plot(length, t_abc_lin_aa_a, color='y',linestyle='-',label='lin aa..ab..cc')
+    plt.plot(length, ref_lin, color='black',linestyle=':',label='f(x) = x^2 * 1.8 * 10^-5')
     plt.legend(loc='upper left')
     plt.savefig('t_abc_lin.jpg')
 
@@ -381,6 +380,7 @@ if linear_abc:
     plt.plot(length_ab, t_abc_cnf_ab, color='r',linestyle='-',label='lin ab..b..c')
     plt.plot(length, t_abc_cnf_aa, color='g',linestyle='-',label='lin aa..b..cc')
     plt.plot(length, t_abc_cnf_aa_a, color='y',linestyle='-',label='lin aa..ab..cc')
+    plt.plot(length, ref_cnf, color='black',linestyle=':',label='f(x) = x^3 * 0.45 * 10^-6')
     plt.legend(loc='upper left')
     plt.savefig('t_abc_cnf.jpg')
 
