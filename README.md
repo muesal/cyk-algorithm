@@ -15,11 +15,12 @@ Compile the code using
 The program can then be started with
 >java CYK [arguments]
 
-It takes up to three input arguments:
+It takes up to four input arguments:
 
 1. Information on the set of test strings
 2. Which algorithm should be used; *naive* for the naive approach, *bu* for the bottom-up and *td* for the top-down algorithm, top-down is the default.
 3. The path to the text-file with the grammar, if none is passed then grammar.txt is used.
+4. The form of the grammar
 
 ### The test strings
 
@@ -70,3 +71,6 @@ The grammar must be in cnf.
 The input file should hold all rules, each on a single line, and the left and right-hand side of the rule separated by a space.
 
 The file grammar.txt holds the language for the Dyck language in this form.
+
+If the grammar is not in CNF but in linear form, then a fourth argument should be provided.
+Use *linear* if the specialized algorithm should be used, or *linear-cnf* if the grammar should be parsed to CNF.

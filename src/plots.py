@@ -13,7 +13,7 @@ dyck_order =    False
 dyck_td =       False
 stupid =        False
 starting_td =   False
-ending =        True
+ending =        False
 starting_bu =   False
 linear_cnf =    False
 linear_dyck =   False
@@ -326,8 +326,6 @@ if linear_cnf:
     ax1.legend(leg, labs, loc='upper left')
     plt.title('Dyck Grammar, linear vs. CNF')
     plt.savefig('t_c_dyck_lin_cnf.jpg')
-
-    #add a plot for time and counter, for both this and the non-linear implementation       q
 
 if linear_abc:
     length_ab = [100, 199, 298, 397, 496, 595, 694, 793, 892, 991, 1090, 1189, 1288, 1387, 1486, 1585, 1684, 1783, 1882, 1981, 2080, 2179, 2278, 2377, 2476, 2575, 2674, 2773, 2872, 2971, 3070, 3169, 3268, 3367, 3466, 3565, 3664, 3763, 3862, 3961, 4060, 4159, 4258, 4357, 4456, 4555, 4654, 4753, 4852, 4951, 5050]

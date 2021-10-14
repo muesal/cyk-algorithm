@@ -1,0 +1,15 @@
+[0] Config.pm:311> INFO - This is Biber 2.16
+[0] Config.pm:314> INFO - Logfile is 'cyk.blg'
+[69] biber:340> INFO - === Thu Oct 14, 2021, 08:14:33
+[83] Biber.pm:415> INFO - Reading 'cyk.bcf'
+[149] Biber.pm:952> INFO - Found 2 citekeys in bib section 0
+[163] Biber.pm:4340> INFO - Processing section 0
+[173] Biber.pm:4531> INFO - Looking for bibtex format file 'main.bib' for section 0
+[174] bibtex.pm:1689> INFO - LaTeX decoding ...
+[177] bibtex.pm:1494> INFO - Found BibTeX data source 'main.bib'
+[238] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'variable = shifted' with 'variable = non-ignorable'
+[238] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[238] Biber.pm:4168> INFO - Sorting list 'ynt/global//global/global' of type 'entry' with template 'ynt' and locale 'en-US'
+[239] Biber.pm:4174> INFO - No sort tailoring available for locale 'en-US'
+[243] bbl.pm:654> INFO - Writing 'cyk.bbl' with encoding 'UTF-8'
+[244] bbl.pm:757> INFO - Output to cyk.bbl

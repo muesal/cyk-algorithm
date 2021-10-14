@@ -1,0 +1,105 @@
+\section{Generalization and Specialization}
+\label{sec:specialization}
+
+In this section we try a specialization of the CYK algorithm. \todo{and generatlization, if I have time to do so}
+Instead of grammars in CNF, we will try grammars in a different form, namely \textbf{linear grammars}.
+We first convert these grammars to CNF and compare the running times to the previous experiments.
+In a second step, we adapt the CYK algorithm to parse strings for those grammars, and compare the efficiency of both approaches.
+
+\subsection{Specialization with Linear Grammars}
+
+\subsubsection{Linear Grammars}
+Similar to CNF, linear grammars also have certain restrictions on how the productions may look like.
+They have, however, only one restriction; each production may at most have one non-terminal variable on its right-hand side.
+\todo{reference?}
+
+We use \textbf{linear context free-grammars in Chomsky normal form} to generalize the CYK algorithm.
+These are grammars that are linear and where all productions have either one terminal symbol, or a non-terminal variable and a terminal symbol on their right-hand side.
+The example we gave in Section~\ref{subsec:exemplary_grammar}~can be easily transformed into linear CNF, by removing non-terminal variable $A$, resulting in the following productions:
+\begin{align*}
+    S&\rightarrow aB \\
+    B&\rightarrow Sb|b \\
+\end{align*}
+
+
+\subsubsection{Transform Linear grammars to CNF}
+A linear grammar can be easily transformed into CNF, by introducing a non-terminal variable $a_T$ for each terminal symbol $a$ which appears in a non-terminal production.
+For every variable that is added that way, the terminal production $a_T\rightarrow a$ is added to the set of productions.
+For the exemplary grammar this would give the productions
+\begin{align*}
+    S&\rightarrow a_T B \\
+    B&\rightarrow Sb_T|b \\
+    a_T&\rightarrow a
+    b_T&\rightarrow b
+\end{align*}
+
+By adding non-terminal variables to the grammar, we expand one dimension of the memoization table.
+Since those have no non-terminal productions, for both the top-down and bottom-up algorithm no additional rules are tested.
+However, the cells for those non-terminals may be accessed often for strings of length bigger than 1, always returning false.
+These unnecessary calls may extend the running time.
+We thus expect test runs on this grammar to yield similar running times than for equivalent grammars already in CNF.
+If we do not transform the grammar into CNF but instead adapt the CYK-algorithm, this extension may be avoided.
+
+\subsubsection{Adapt CYK to Linear Grammars}
+Grammars in Linear CNF have two types of rules; terminal rules and non terminal rules.
+Similar to the non-specialized approach, we can use the terminal rules to determine, which non-terminal variables can directly derive which terminal symbols.
+The non-terminal rules are different, and require the algorithm to act differently.
+
+They all have exactly on terminal and one non-terminal variable on their right hand side.
+In contrast to the non-specialized approaches, we do not need to look at multiple splitting points, to determine whether a non-terminal rule applied on a given non-terminal variable can derive a string.
+The terminal symbol must be equal to the last or first symbol of the substring, depending on wether it is the first or second variable on the right-hand side of the production.
+The non-terminal variable must be able to derive the remaining symbols of the considered string.
+Therefore, only the last or the first splitting point need to be considered.
+Algorithm \ref{alg:bu_linear}~shows how this can be applied to the bottom-up CYK algorithm.
+
+We chose to adapt the bottom-up algorithm rather than top-down, because it is less likely to run into stack-overflow errors.
+For big input strings, top-down may cause them because the compiler loses track of the recursive calls.
+
+\begin{algorithm}[H]
+    \caption{Linear Bottom-Up CYK Parser}
+    \label{alg:bu_linear}
+    \begin{algorithmic}[1]
+        \Function{Lin-Bottom-Up}{input string $s[1..n]$}
+        \State allocate table $tab[|V|][n][n]$ initialized with false
+        \State counter $\leftarrow$ 0
+    
+        \For{$i \in {1,\dots,n}$}
+            \For{${A: A\rightarrow s[i]\in P}$}
+                \State $tab[A,i,1] \leftarrow$ true
+            \EndFor
+        \EndFor
+
+        \For{$j\in {2,\dots,n}$}
+            \For{$i\in {1,\dots,n-j+1}$}
+                \For{$(A\rightarrow v_1v_2) \in P$}
+                    \State counter $\leftarrow$ counter + 1 \label{lst:bu_linear_11}
+                    \If {$v_1$ is terminal symbol}
+                        \If {$v_1 = s[i]$ \textbf{and} $tab[v_2,i+1,j-1]$}
+                            \State $tab[A,i,j]\leftarrow$ true
+                            \State break loop
+                        \EndIf
+                    \Else
+                        \If {$v_2 = s[i+j]$ \textbf{and} $tab[v_1,i,j-1]$}
+                            \State $tab[A,i,j]\leftarrow$ true
+                            \State break loop
+                        \EndIf
+                    \EndIf
+                \EndFor
+            \EndFor
+        \EndFor
+
+        \State \textbf{return} $tab[S,1,n]$
+        \EndFunction
+    \end{algorithmic}
+\end{algorithm}
+
+The only difference between algorithm~\ref{alg:bu} and algorithm~\ref{alg:bu_linear} is what happens at the inner most loop, beneath line \ref{lst:bu_linear_11}.
+Instead of iterating over all possible splitting points, we first check which part of the rule's right-hand side is the terminal symbol.
+We then first ask, if this is equal to the respective symbol in the input string, and if so check whether the terminal variable can derive the rest of the substring.
+
+The running time of this algorithm is $O(n^2)$, since it is similar to the non-specialized bottom-up algorithm, but the inner most for-loop is not $O(n)$ anymore, but constant.
+
+Compared to parsing strings for a linear grammar, which was transformed to CNF, we expect this algorithm to be more efficient, since it must try less splitting points per production.
+Further, it will use less memory, since there are less non-terminal variables, compared to the transformed grammar, thus one dimension of $tab$ is smaller.
+
+\todo{Generalization: Error correction / First count number of errors}

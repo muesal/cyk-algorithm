@@ -1,4 +1,22 @@
 \section*{Introduction}
-\todo{write the introduction}
-% We implemented and tested three approaches for determining, whether a word is part of the language of a context free Grammar_CNF, namely a naive approach, the bottom-up CYK-algorithm, and a top down approach with memoization.
-% We analysed the implementations and cam to some conclusions.
+
+The membership problem asks, whether a given string is in the language of a given context free grammar (CFG).
+A CFG holds a set of variables and productions.
+Applying the productions on the variables derives a finite set of strings, which form the language of the grammar.
+Na\"{i}ve approaches to solve the membership problem have exponential running time.
+In this report, we evaluate the Cocke-Younger-Kasami algorithm, which solves the problem in $O(n^3)$ for grammars that are in Chomsky normal form.
+We look at a bottom-up approach, as well as a top-down approach which uses memoization.
+Further, we try to specialize the algorithm to parse strings for linear grammars.
+
+The evaluation shows, that bottom-up and top-down behave very differently.
+The running times of bottom-up are steadier than those of top-down, i.e., the running time varies less for parsing different strings of the same length for the same grammar.
+We further see, that bottom-up behaves better on average.
+Nevertheless, top-down can yield a lot faster running times, depending on the order of the productions of the grammar and the input string.
+
+However, adapting the bottom-up algorithm to parse linear grammars yields even better results.
+The running time for the specialized algorithm lies in $O(n^2)$.
+
+In section~\ref{sec:backgrund} we define Context free grammars and introduce the CYK algorithm, as well as the three different approaches used for the evaluation.
+In section~\ref{sec:specialization} we show how we generalize the algorithm for linear grammars, before we evaluate all algorithms in section~\ref{sec:Evaluation}.
+
+

@@ -7,6 +7,7 @@
 \usepackage{amsfonts}
 \usepackage{mathtools}
 \usepackage[dvipsnames]{xcolor}
+\usepackage{subcaption}
 \usepackage{graphicx}
 \usepackage{algorithm}
 \usepackage[noend]{algpseudocode}
@@ -16,9 +17,18 @@
 \usetikzlibrary{shapes,positioning}
 \newcommand{\todo}[1]{{\color{red}#1}}
 
+% Bibliography stuff
+\usepackage[
+    backend=biber,  
+    style=ieee,
+    sorting=ynt
+]{biblatex}
+\addbibresource{main.bib}
+
+
 %% ----------------------------------------------------------------
 
-\title{CockeYoungerKasami}
+\title{Evaluation of the Cocke-Younger-Kasami Algorithm}
 \author{Salome Müller}
 \date{October 1, 2021}
 
@@ -29,19 +39,24 @@
 
 %% Write the abstract
 \begin{abstract}
-    \todo{Summarize Introduction to 2-3 sentences.}
+    The Cocke Younger Kasami algorithm can solve the membership problem for context free grammars in $O(n^3)$.
+    For this report three different approaches to the algorithm were implemented and evaluated.
+    The evaluation showed that the bottom-up approach was faster on average, while top-down has very fast running times in best-case.
+    Further, on of them was specialized to operate on linear grammars, yielding running times in $O(n^2)$.
 \end{abstract}
 
 \pagebreak
 \tableofcontents
 \pagebreak
 
-
 %% Include all chapters
 \input{./Chapters/Introduction}
 \input{./Chapters/Background}
-\input{./Chapters/Generalization}
+\input{./Chapters/Specialization}
 \input{./Chapters/Evaluation}
 \input{./Chapters/Conclusion}
+
+\pagebreak
+\printbibliography
 
 \end{document}

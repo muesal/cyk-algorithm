@@ -1,12 +1,23 @@
+\newpage
 \section{Conclusion}
 
-\todo{summarize the outcome of the experiments and draw some further conclusions.}
+Evaluating the non-specialized bottom-up and top-down algorithms showed multiple things.
+Firstly, bottom-up has steadier running times than top-down.
+This means, that even though the times may vary for different strings of the same length for the same grammar, they do not vary as much as for the top-down parser.
+Further, it's worst case times are better, than those of top-down.
+However, if the top-down parser is run on a favorable combination of a good ordering of the rules and form of input string, its running time may be very low.
+Thus, its best-case running time is a lot lower than that of bottom-up.
 
-Bottom-up is very steady, it's behavior can easily be predicted, as it is mainly dependent on the length of the input string.
-Top-down on the other hand, since it only looks at subproblems that are needed to find the optimal solution, can be a lot faster.
-When the rules of the grammar are in the correct order, i.e., in an order such that the rules used for optimal solutions are considered first, and the splitting points to find said solutions are low, then this parser will yield very good running times.
-If neither is the case, it can be a lot slower than bottom-up, since bottom-up fills the cells in a structured way and thus accesses the cells less often.
-Top down may access the same cell a lot of times, when the same subproblem occurs very often, resulting in a bad.
+The analysis further showed, that the running times could often be explained, by analyzing how the memoization table is filled and how many accesses to the table are performed in order to solve the problem.
+Thus, if the input string is known, the faster algorithm can be detected with reasoning.
 
-\todo{Bibliography. Cited works are mainly both books used in the lecture.}
+In general, it is safe to say, that both algorithms perform better if the grammar produces words with a distinctive property in the beginning, rather than in the end.
+Parsing strings for the grammar of strings starting in a, different running times were yielded for different input strings of the same length.
+Contrarily, for the grammar of strings ending in a, both the top-down and bottom-up parser yielded the same running times for any input string of same length, being slower than for any input string on the grammar for strings starting in a.
 
+Analyzing the transformation of a linear grammars to an equivalent grammar in CNF can easily be done.
+However, it does not improve the running time compared to parsing an equivalent grammar which is already in CNF.
+Specializing the bottom-up algorithm on the other hand improves the running time a lot, as the algorithm is not in $O(n^3)$ anymore, but in $O(n^2)$.
+
+It would be interesting to analyze, how the specialized algorithm performs on different grammars.
+We could transform the grammars for strings starting and ending in a to equivalent linear grammars, and verify whether it still holds, that the running times are better if the distinctive property is in the beginning.
