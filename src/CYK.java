@@ -207,6 +207,7 @@ public class CYK {
                 start = Instant.now();
                 corrected = parser.correct_string();
                 if (corrected.isEmpty()) corrected = "Could not find a representative in this language";
+                else error_count = parser.getErrors();
                 end_correct[j] = Duration.between(start, Instant.now()).toMillis();
                 c_correct = Parser.counter;
 
@@ -228,7 +229,7 @@ public class CYK {
 
             length.add(s.length());
             counter.add(c);
-            counter.add(c_correct);
+            counter_c.add(c_correct);
             duration.add(end_average);
             duration_c.add(end_average_correct);
             errors.add(error_count);

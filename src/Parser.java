@@ -8,6 +8,7 @@ public class Parser {
     boolean[][][] tab; // used in top-down and buttom-up)
     boolean[][][] tab_set; // used in top-down
     int[][][][] tab_c; // used in bottom up with error correction
+    int errors;
 
     /**
      * Constructor for the Parser.
@@ -225,12 +226,17 @@ public class Parser {
             }
         }
 
-        // can the start variable (nonterminal 0) construct the whole input string (start 0, length n)?
+        // can the start variable (non-terminal 0) construct the whole input string (start 0, length n)?
         return tab_c[0][0][input.length - 1][0];
+    }
+
+    public int getErrors() {
+        return errors;
     }
 
     public String correct_string() {
         counter = 0;
+        errors = 0;
         String correct = "";
         try {
             correct = correct_string(0, 0, input.length - 1);
@@ -251,6 +257,7 @@ public class Parser {
 
         // the substring has length one, but can not be yielded. replace by terminal this non-terminal can derive
         if (j == 0) {
+            errors++;
             // If a has no non-terminal rule, this produces an array out of bound array, and the solution can not be found
             return String.valueOf(grammar.getTerminalRules(a)[0]);
         }
@@ -261,10 +268,12 @@ public class Parser {
         if (first < last) {
             // the substrings first terminal should be deleted
             if (first < tab_c[a][i][j][0]) {
+                errors++;
                 return correct_string(a, i + 1, j - 1);
             }
         } else if (last < tab_c[a][i][j][0]) {
             // the substrings first terminal should be deleted
+            errors++;
             return correct_string(a, i, j - 1);
         }
 
