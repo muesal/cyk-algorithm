@@ -32,6 +32,7 @@ public class CYK {
         // set the algorithm and the input files (Grammar and test set of strings) as given arguments or default
         String algorithm = args.length > 1 ? args[1] : "td";
         String grammar_file = args.length > 2 ? args[2] : "parantheses.txt";
+        boolean correct_errors = args.length > 3 && args[3].equals("correct");
         String grammar_type = args.length > 3 ? args[3] : "cnf";
 
 
@@ -53,7 +54,10 @@ public class CYK {
             return;
         }
 
-        parse(algorithm);
+        if (!correct_errors)
+            parse(algorithm);
+        else
+            parse_correct();
     }
 
     /**
@@ -63,7 +67,7 @@ public class CYK {
      */
     private static void parse(String algorithm) {
         // print info and head of table
-        int iterations = 10;
+        int iterations = 1;
 
 
         String alg = algorithm.equals("naive") ? "naive" : algorithm.equals("bu") ? "bottom-down" : "top-down";
@@ -147,6 +151,98 @@ public class CYK {
         System.out.println("\ncounter:\n" + counter);
         System.out.println("\nduration:\n" + duration);
         System.out.println("\ntruth:\n" + truth);
+    }
+
+    /**
+     * Parse the set of strings, i.e., check for every string whether it is in the language of the grammar with bottom-up,
+     * correct the string if possible (replacements, deletions)
+     */
+    private static void parse_correct() {
+        // print info and head of table
+        int iterations = 1;
+
+        System.out.println("\nStarting computation with the bottom-up algorithm for input strings up to length " +
+                testSet.max + ". Every string will be parsed " + iterations +
+                "computed data will be printed again in the end, such that it is easier to copy-paste in order to " +
+                "visualize it with another tool.\n");
+        System.out.printf("%-7s| %-15s | %-15s | %-12s | %-15s | %-15s | %s\n", "Length", "Time in seconds",
+                "Counter", "Nr of errors", "Time corr.", "Counter corr.", "Correct string");
+        System.out.print("--------------------------------------------------------------------------------------------------------------\n");
+
+        ArrayList<Integer> length = new ArrayList<>();
+        ArrayList<Long> counter = new ArrayList<>();
+        ArrayList<Long> counter_c = new ArrayList<>();
+        ArrayList<Long> duration = new ArrayList<>();
+        ArrayList<Long> duration_c = new ArrayList<>();
+        ArrayList<Integer> errors = new ArrayList<>();
+
+
+        // parse and measure all strings
+        while (!testSet.finished()) {
+            String s = testSet.nextString();
+
+            System.out.printf("%-7d", s.length());
+            parser.set_input(s);
+
+            // initialize variables and arrays
+            int error_count = 0;
+            String corrected = "";
+            Instant start;
+            long[] end = new long[iterations];
+            long[] end_correct = new long[iterations];
+            long c = 0;
+            long c_correct = 0;
+
+            // parse the string iteration times, to get the average time passed
+            for (int j = 0; j < iterations; j++) {
+                // start time measurement
+
+                // parse the current string, compute duration
+                start = Instant.now();
+                error_count = parser.parse_error();
+                end[j] = Duration.between(start, Instant.now()).toMillis();
+                c = Parser.counter;
+
+                // correct the string, get duration
+                start = Instant.now();
+                corrected = parser.correct_string();
+                if (corrected.isEmpty()) corrected = "Could not find a representative in this language";
+                end_correct[j] = Duration.between(start, Instant.now()).toMillis();
+                c_correct = Parser.counter;
+
+            }
+
+            long end_average;
+            long end_average_correct;
+
+            if (iterations == 1) {
+                end_average = end[0];
+                end_average_correct = end[0];
+            } else {
+                end_average = (end[0] + end[1]) / 2;
+                end_average_correct = (end[0] + end[1]) / 2;
+            }
+
+            // print result
+            System.out.printf("|  %-15d|  %-15d|  %-12d|  %-15d|  %-15d| %s\n", end_average, c, error_count, end_average_correct, c_correct, corrected);
+
+            length.add(s.length());
+            counter.add(c);
+            counter.add(c_correct);
+            duration.add(end_average);
+            duration_c.add(end_average_correct);
+            errors.add(error_count);
+
+        }
+
+        // print all tables, to make copy-pasting easier
+        System.out.print("\nValues for copy pasting:");
+        System.out.println("\nlength:\n" + length);
+        System.out.println("\ncounter:\n" + counter);
+        System.out.println("\nduration:\n" + duration);
+        System.out.println("\ncounter correcting:\n" + counter_c);
+        System.out.println("\nduration correcting:\n" + duration_c);
+        System.out.println("\nerrors:\n" + errors);
     }
 
     /**
