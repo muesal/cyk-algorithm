@@ -1,4 +1,3 @@
-import java.util.Arrays;
 
 public class Parser {
 
@@ -267,11 +266,11 @@ public class Parser {
 
         if (first < last) {
             // the substrings first terminal should be deleted
-            if (first < tab_c[a][i][j][0]) {
+            if (first < tab_c[a][i][j][0] - 1) {
                 errors++;
                 return correct_string(a, i + 1, j - 1);
             }
-        } else if (last < tab_c[a][i][j][0]) {
+        } else if (last < tab_c[a][i][j][0] - 1) {
             // the substrings first terminal should be deleted
             errors++;
             return correct_string(a, i, j - 1);

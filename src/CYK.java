@@ -218,10 +218,10 @@ public class CYK {
 
             if (iterations == 1) {
                 end_average = end[0];
-                end_average_correct = end[0];
+                end_average_correct = end_correct[0];
             } else {
                 end_average = (end[0] + end[1]) / 2;
-                end_average_correct = (end[0] + end[1]) / 2;
+                end_average_correct = (end_correct[0] + end_correct[1]) / 2;
             }
 
             // print result
