@@ -1,55 +1,63 @@
 \boolfalse {citerequest}\boolfalse {citetracker}\boolfalse {pagetracker}\boolfalse {backtracker}\relax 
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {1}Background}{3}{}%
+\contentsline {section}{\numberline {1}Introduction}{3}{section.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {1.1}Context-Free Grammar}{3}{}%
+\contentsline {section}{\numberline {2}Background}{3}{section.2}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\numberline {1.1.1}Exemplary Grammar}{4}{}%
+\contentsline {subsection}{\numberline {2.1}Context-Free Grammar}{3}{subsection.2.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\numberline {1.1.2}Chomsky Normal Form}{4}{}%
+\contentsline {subsubsection}{\numberline {2.1.1}Exemplary Grammar}{4}{subsubsection.2.1.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {1.2}Cocke-Younger-Kasami Algorithm}{5}{}%
+\contentsline {subsubsection}{\numberline {2.1.2}Chomsky Normal Form}{4}{subsubsection.2.1.2}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\numberline {1.2.1}Dynamic Programming}{6}{}%
+\contentsline {subsection}{\numberline {2.2}Cocke-Younger-Kasami Algorithm}{5}{subsection.2.2}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\numberline {1.2.2}Na\"{i}ve}{7}{}%
+\contentsline {subsubsection}{\numberline {2.2.1}Dynamic Programming}{6}{subsubsection.2.2.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\numberline {1.2.3}Bottom-Up}{8}{}%
+\contentsline {subsubsection}{\numberline {2.2.2}Na\"{i}ve}{8}{subsubsection.2.2.2}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\numberline {1.2.4}Top-Down}{9}{}%
+\contentsline {subsubsection}{\numberline {2.2.3}Bottom-Up}{9}{subsubsection.2.2.3}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {2}Generalization and Specialization}{11}{}%
+\contentsline {subsubsection}{\numberline {2.2.4}Top-Down}{10}{subsubsection.2.2.4}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {2.1}Specialization with Linear Grammars}{11}{}%
+\contentsline {section}{\numberline {3}Generalization and Specialization}{11}{section.3}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\numberline {2.1.1}Linear Grammars}{11}{}%
+\contentsline {subsection}{\numberline {3.1}Specialization with Linear Grammars}{11}{subsection.3.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\numberline {2.1.2}Transform Linear grammars to CNF}{11}{}%
+\contentsline {subsubsection}{\numberline {3.1.1}Transform Linear grammars to CNF}{11}{subsubsection.3.1.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\numberline {2.1.3}Adapt CYK to Linear Grammars}{12}{}%
+\contentsline {subsubsection}{\numberline {3.1.2}Adapt CYK to Linear Grammars}{12}{subsubsection.3.1.2}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {3}Evaluation}{13}{}%
+\contentsline {subsection}{\numberline {3.2}Generalization for Error Correction}{14}{subsection.3.2}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {3.1}Grammars}{13}{}%
+\contentsline {subsubsection}{\numberline {3.2.1}Counting the errors}{14}{subsubsection.3.2.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\numberline {3.1.1}Dyck Language}{13}{}%
+\contentsline {subsubsection}{\numberline {3.2.2}Correcting the Input String}{16}{subsubsection.3.2.2}%
 \defcounter {refsection}{0}\relax 
-\contentsline {paragraph}{Linear Form}{14}{}%
+\contentsline {section}{\numberline {4}Evaluation}{18}{section.4}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\numberline {3.1.2}Strings Starting or Ending in a}{15}{}%
+\contentsline {subsection}{\numberline {4.1}Grammars}{18}{subsection.4.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\numberline {3.1.3}ABC Grammar}{16}{}%
+\contentsline {subsubsection}{\numberline {4.1.1}Dyck Language}{18}{subsubsection.4.1.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {3.2}Evaluation of the conventional Implementation}{17}{}%
+\contentsline {paragraph}{Linear Form}{19}{section*.3}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\numberline {3.2.1}Dyck Language}{17}{}%
+\contentsline {subsubsection}{\numberline {4.1.2}Strings Starting or Ending in a}{19}{subsubsection.4.1.2}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\numberline {3.2.2}Strings starting and ending in a}{19}{}%
+\contentsline {subsubsection}{\numberline {4.1.3}ABC Grammar}{21}{subsubsection.4.1.3}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {3.3}Evaluation of the Specialization with Linear Grammars}{21}{}%
+\contentsline {subsection}{\numberline {4.2}Evaluation of the conventional Implementation}{21}{subsection.4.2}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\numberline {3.3.1}Grammar Transformation}{21}{}%
+\contentsline {subsubsection}{\numberline {4.2.1}Dyck Language}{22}{subsubsection.4.2.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\numberline {3.3.2}Adapted algorithm}{22}{}%
+\contentsline {subsubsection}{\numberline {4.2.2}Strings starting and ending in a}{23}{subsubsection.4.2.2}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {4}Conclusion}{24}{}%
+\contentsline {subsection}{\numberline {4.3}Evaluation of the Specialization with Linear Grammars}{26}{subsection.4.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {4.3.1}Grammar Transformation}{26}{subsubsection.4.3.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {4.3.2}Adapted algorithm}{27}{subsubsection.4.3.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {4.4}Evaluation of the Generalization with Error Correction}{28}{subsection.4.4}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {5}Conclusion}{30}{section.5}%

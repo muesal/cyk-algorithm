@@ -475,5 +475,3 @@ if error:
     plt.plot(length_de, c_dyck_4_corr, color='y',linestyle='-',label='())())..(()(()')
     plt.legend(loc='upper left')
     plt.savefig('t_err_corr.jpg')
-
-    # TODO: Mention t_err in report. Error in middle: first one ~20 ms, rest 0.

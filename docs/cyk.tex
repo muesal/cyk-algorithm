@@ -12,9 +12,12 @@
 \usepackage{algorithm}
 \usepackage[noend]{algpseudocode}
 \floatname{algorithm}{Algorithm}
+\usepackage{enumitem}
 \usepackage{tikz}
 \usepackage{forest}
 \usetikzlibrary{shapes,positioning}
+\usepackage{hyperref}
+\usepackage[capitalise, noabbrev]{cleveref}
 \newcommand{\todo}[1]{{\color{red}#1}}
 
 % Bibliography stuff
@@ -30,7 +33,7 @@
 
 \title{Evaluation of the Cocke-Younger-Kasami Algorithm}
 \author{Salome Müller}
-\date{October 1, 2021}
+\date{\today}
 
 \begin{document}
 
@@ -40,9 +43,11 @@
 %% Write the abstract
 \begin{abstract}
     The Cocke Younger Kasami algorithm can solve the membership problem for context free grammars in $O(n^3)$.
-    For this report three different approaches to the algorithm were implemented and evaluated.
-    The evaluation showed that the bottom-up approach was faster on average, while top-down has very fast running times in best-case.
-    Further, on of them was specialized to operate on linear grammars, yielding running times in $O(n^2)$.
+    For this report three different approaches to the algorithm are implemented and evaluated.
+    The evaluation shows that the bottom-up approach is faster on average, while top-down has very fast running times in best-case.
+    Further, bottom-up is specialized to operate on linear grammars, yielding running times in $O(n^2)$.
+    The bottom-up approach can also be used to calculate the number of errors and correct the input string, such that the result belongs to the language of the grammar.
+    While the correction of the string has linear running time and proceeds very fast, the generalized bottom-up algorithm is much slower than the original bottom-up algorithm.
 \end{abstract}
 
 \pagebreak

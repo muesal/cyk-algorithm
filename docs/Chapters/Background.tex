@@ -61,7 +61,7 @@ Further, a non-terminal must either derive two non terminals or one terminal var
 The CYK algorithm can only operate on grammars, that are in the \textbf{reduced Chomsky normal form}.
 The reduced CNF is similar to CNF, with the only difference that $S$ may also appear on the right hand side of a production.
 
-In order to transform the grammar from section~\ref{subsec:exemplary_grammar} to reduced CNF, we add the non-terminals $C,D$ to $V$ and get the new set of productions $P'$:
+In order to transform the grammar from~\cref{subsec:exemplary_grammar} to reduced CNF, we add the non-terminals $C,D$ to $V$ and get the new set of productions $P'$:
 \begin{align*}
     S&\rightarrow AC | AB \\
     C&\rightarrow SB \\
@@ -69,7 +69,7 @@ In order to transform the grammar from section~\ref{subsec:exemplary_grammar} to
     B&\rightarrow b \\
 \end{align*}
 
-In~\ref{sec:dynamic_programming} we show, why CYK depends on grammars to be in reduced CNF.
+In~\cref{sec:dynamic_programming} we show, why CYK depends on grammars to be in reduced CNF.
 
 \subsection{Cocke-Younger-Kasami Algorithm}
 
@@ -122,17 +122,17 @@ The first, \textbf{optimal substructure}, says, that the optimal solution of a p
 \textbf{Overlapping subproblems} is the second requirement, assuring that the problem has overlapping subproblems.
 
 CYK applies the bottom-up approach, by dividing the string into two smaller substrings and solving them each respectively.
-The membership problem looks for a truth-value, for a subproblem are therefore only two possible answers, true or false.
-The optimal value is true, as the algorithm tries to find a combination of subproblems, that returns true.
+The membership problem looks for a truth-value, for a subproblem are therefore only two possible answers, \textit{true} or \textit{false}.
+The optimal value is \textit{true}, as the algorithm tries to find a combination of subproblems, that returns \textit{true}.
 When trying to find the truth-value for a non-terminal variable $A$ for any string, we try to find any combination of a splitting point $k$ and a non-terminal production in $P$ for $A$, $A\rightarrow BC$, that derives the string.
 The resulting subproblems are whether $B$ and $C$ can derive the left and right substring respectively.
 We can do this for all non-terminal productions, as they all have exactly two non-terminal variables on their right-hand side, since the grammar is in reduced CNF.
-The answer of our problem is the logical \textit{and} of the solution of both subproblems, i.e., if for any such combination both subproblems return true, then $A$ can derive the string.
+The answer of our problem is the logical \textit{and} of the solution of both subproblems, i.e., if for any such combination both subproblems return \textit{true}, then $A$ can derive the string.
 This already shows, that the optimal substructure holds for the membership problem.
 
 \input{Resources/recursive_tree.tex}
 
-To show that the problem has overlapping subproblems, we will use the tree in figure \ref{fig:recursive-tree}, which shows all subproblems of a string of length four.
+To show that the problem has overlapping subproblems, we will use the tree in~\cref{fig:recursive-tree}, which shows all subproblems of a string of length four.
 The total amount of subproblems is 26.
 Therefore, any algorithm trying to solve every subproblem computes 26 subproblems.
 The nodes of the tree are colored, such that the same subproblems have the same color, i.e., the problem has only nine distinct subproblems.
@@ -154,10 +154,10 @@ The input string will be stored globally, as an array of characters $s[1..n]$.
 \texttt{counter} is a global variable which is initialized with $0$ and increased at every recursive call.
 The procedure takes three input arguments: a non-terminal $A\in V$ and the starting and end points ($i$ and $j$) of the substring, which should be considered.
 If it is called on a substring of length 1, i.e., $i = j-1$, it returns the truth-value of whether $A\rightarrow s[i]$ holds.
-This is done in lines~\ref{lst:naive_1} t~\ref{lst:naive_7} in Algorithm~\ref{alg:naive}.
+This is done in~\cref{lst:naive_1} till~\cref{lst:naive_7} in~\cref{alg:naive}.
 Otherwise, it iterates over all non-terminal productions of $A$, $(A\rightarrow BC) \in P$.
-For each production it tries to find a splitting point $k$, $i <= k < j$, for which $B$ yields $s[i..k]$ and $C$ yields $s[k+1..j]$, using recursive calls.
-If no such production can be found, the algorithm returns false, since $A$ can not derive $s[i..j]$.
+For each production it tries to find a splitting point $k$, $i <= k < j$, for which $B$ derives $s[i..k]$ and $C$ derives $s[k+1..j]$, using recursive calls.
+If no such production can be found, the algorithm returns \textit{false}, since $A$ can not derive $s[i..j]$.
 The initial call on the method is \texttt{Naive($S$, $1$, $n$)}.
 
 \begin{algorithm}[H]
@@ -190,11 +190,11 @@ The initial call on the method is \texttt{Naive($S$, $1$, $n$)}.
 
 Imagine, that instead of all possible splitting points $k$ the algorithm would only try the first and the last one.
 This would result in four recursive calls.
-Two of those are on the substrings of length 1, and run in linear time, as the immediately return a result (\ref{lst:naive_ret_1} or~\ref{lst:naive_ret_2})
-The other two recursive calls would again each call 4 recursive calls, of which two are linear.
-This is repeated, until a substring of size 2 is reached, for which all calls return in linear time.
+Two of those are on the substrings of length 1, and run in constant time, as they immediately return a result (\cref{lst:naive_ret_1} or~\cref{lst:naive_ret_2})
+The other two recursive calls would again each call 4 recursive calls, of which two are constant.
+This is repeated, until a substring of size 2 is reached, for which all calls return in constant time.
 This would result in a total of $2^n$ recursive calls, thus the running time of such an algorithm would be in $O(2^{n-1})$.
-However, Algorithm~\ref{alg:naive} does not try 2 but $n-1$ splitting points in worst case, and thus performs $2*(n-1)$ recursive calls.
+However,~\cref{alg:naive} does not try 2 but $n-1$ splitting points in worst case, and thus performs $2*(n-1)$ recursive calls.
 The amount of subproblems tht are considered this way is $(n-1)/2 * O(2^{n-1})$.
 Thus, the running time is exponential in $n$~\cite{automata}.
 
@@ -205,16 +205,16 @@ The following algorithms show, how the running time can be improved by using mem
 \label{sec:bottom_up}
 The bottom-up approach is the original CYK-algorithm.
 It initializes a table $tab$ of size $|V|\times n\times n$.
-When the algorithm is finished, $tab[A,i,j]$ will be true, if non-terminal $A$ can derive $s[i..i+j]$.
+When the algorithm terminates, $tab[A,i,j]$ will be \textit{true}, if non-terminal $A$ can derive $s[i..i+j]$.
 Notice that $j$ is no longer the end point of the substring, but its length.
 Further, it initializes a \texttt{counter}, which holds the number of iterations on the innermost loop.
 
 Since the algorithm performs bottom-up, it first fills the bottom row of the table, i.e. $tab[A,i,1]$ for $i\in\{1,\dots,n\}$ and all $A\in V$.
 It then iteratively increases $j$, and fills all cells on its way up through the table.
-At each cell $tab[A,i,j]$, the algorithm checks if there is a production $A\rightarrow BC$ in $P$ and a $k$, $1 \leq k < j$, for which $tab[B,i,k]$ and $tab[C,i+k+1, j]$ are both true.
+At each cell $tab[A,i,j]$, the algorithm checks if there is a production $A\rightarrow BC$ in $P$ and a $k$, $1 \leq k < j$, for which $tab[B,i,k]$ and $tab[C,i+k+1, j]$ are both \textit{true}.
 This way, it uses the solutions to already solved subproblems to solve the current problem, only accessing cells of $tab$, which were already filled before.
-If so, $A$ can derive $s[i..i+j]$, and $tab[A,i,j]$ will is set to true.
-Since the algorithms were implemented in Java, $tab[C,i+k+1, j]$ will only be accessed if $tab[B,i,k]$ is true. \todo{move to implementation if existing}
+If both are true, $A$ can derive $s[i..i+j]$, and $tab[A,i,j]$ will is set to \textit{true}.
+Since the algorithms were implemented in Java, $tab[C,i+k+1, j]$ will only be accessed if $tab[B,i,k]$ is \textit{true}.
 
 
 \begin{algorithm}[H]
@@ -252,10 +252,10 @@ Since the algorithms were implemented in Java, $tab[C,i+k+1, j]$ will only be ac
 
 The bottom-up CYK algorithm solves each subproblem exactly once.
 It has a complexity of $O(n^3)$~\cite{automata}.
-The initialization, lines~\ref{lst:bu_ini_1} to~\ref{lst:bu_ini_2}, takes $O(n)$, due to the iteration over all elements of $s$.
-The for-loop on line~\ref{lst:bu_for_4} is repeated at most $n$ times since $k$ is in the interval $\{1,\dots,n\}$ at most (in practice, it will often be executed less, since it breaks, as soon as the condition is met).
-The two outer loops, lines~\ref{lst:bu_for_1} and~\ref{lst:bu_for_2}, are both repeated $n$ times.
-Thus, the loop at line~\ref{lst:bu_for_4} will be called $O(n^2)$ times, which results in a complexity of $O(n^3)$ for lines 6 to 12.
+The initialization,~\cref{lst:bu_ini_1} till~\cref{lst:bu_ini_2}, takes $O(n)$, due to the iteration over all elements of $s$.
+The for-loop on~\cref{lst:bu_for_4} is repeated at most $n$ times since $k$ is in the interval $\{1,\dots,n\}$ at most (in practice, it will often be executed less, since it breaks, as soon as the condition is met).
+The two outer loops,~\cref{lst:bu_for_1} and~\cref{lst:bu_for_2}, are both repeated $n$ times.
+Thus, the loop at~\cref{lst:bu_for_4} will be called $O(n^2)$ times, which results in a complexity of $O(n^3)$ for the nested loops.
 The overall running time is therefore in $O(n^3)$.
 
 We expect this algorithm to behave very similarly on strings of the same length.
@@ -265,7 +265,7 @@ Further, the order in which the productions of the grammar are provided does hav
 \label{sec:top_down}
 The top-down approach resembles the na\"{i}ve one, as it is recursive.
 It uses, however, memoization, which makes it a lot more efficient as each subproblem is solved once at most.
-When the method \texttt{Top-Down-Parse($s[1..n]$)}) is called, it initializes the global table of size $|v|\times n\times n$, which is similar to the one used for the bottom-up CYK algorithm.
+When the method \texttt{Top-Down-Parse($s[1..n]$)} is called, it initializes the global table of size $|v|\times n\times n$, which is similar to the one used for the bottom-up CYK algorithm.
 It then calls \texttt{Top-Down($S$, $1$, $n$)} and returns $tab[S,1,n]$, which contains the truth value of the membership problem.
 \texttt{Top-Down($A$, $i$, $j$)} first checks, if the subproblem of whether $A$ derives $s[i..j]$ was already solved, i.e., if $tab[A,i,j]$ is set.
 If so, it returns the before computed truth-value.
@@ -273,7 +273,7 @@ Otherwise, the value is computed recursively, stored in $tab[A,i,j]$ and returne
 The next call of \texttt{Top-Down($A$, $i$, $j$)} will not compute anything, but return the truth-value immediately.
 Like the na\"{i}ve approach, the top-down algorithm has a \texttt{counter} which holds the number of calls on the recursive function.
 
-Similar to bottom-up, the right-hand side of the if-request on line 11 will only be called, if the left-hand side is true. \todo{at implementation, if written}
+Similar to bottom-up, the right-hand side of the if-request on~\cref{lst:td_call} will only be called, if the left-hand side is \textit{true}.
 
 \begin{algorithm}[H]
     \caption{Top-Down Parser}
@@ -288,21 +288,21 @@ Similar to bottom-up, the right-hand side of the if-request on line 11 will only
         \Function{Top-Down}{non-terminal A, int i, int j}
             \State counter $\leftarrow$ counter + 1
 
-            \If{$tab[A,i.j]=$\texttt{null}}
+            \If{$tab[A,i,j]=$\texttt{null}}
                 \State \textbf{return} $tab[A,i,j]$
             \EndIf
 
-            \State $tab[A,i.j]\leftarrow$ false
+            \State $tab[A,i,j]\leftarrow$ false
 
             \If{$j = 0$}
                 \If{$(A\rightarrow s[i])\in P$}
-                    \State $tab[A,i.j]\leftarrow$ true
+                    \State $tab[A,i,j]\leftarrow$ true
                 \EndIf
             \Else
                 \For{$(A\rightarrow BC) \in P$}
                     \For{$k \in \{i+1,\dots,j-1\}$}
-                        \If {\Call{Top-Down}{$B$, $i$, $k$} \textbf{and} \Call{Top-Down}{$C$, $i+k$, $j-k$}} \label{lst:td_call}
-                        \State $tab[A,i.j]\leftarrow$ true
+                        \If {\Call{Top-Down}{$B$, $i$, $k$} \textbf{and} \Call{Top-Down}{$C$, $i+k$, $j-k$}}\label{lst:td_call}
+                        \State $tab[A,i,j]\leftarrow$ true
                         \State break loop
                         \EndIf
                     \EndFor
@@ -323,17 +323,3 @@ If this is not the case, and most of the subproblems must be solved, then we exp
 
 In the following sections we first show a specializations and a generalization of the CYK algorithm, before we evaluate them and the conventional implementation.
  
-%\subsubsection{Implementation}
-
-% \todo{The parser was implemented in Java.
-% It can be called with instructions on the set on input string, also called test set, and the algorithm which should be used.
-
-% The productions of the grammar were implemented in a way, that the algorithms can easily access all productions of a variable and iterate over them.
-% The non-terminal productions of each variable in $V$ are stored in an array of arrays of integers.
-% The arrays of each variable are referenced from an array \texttt{productions}.
-% If the start variable has one production, say $v_0 \rightarrow v_1v_2$, then \texttt{productions[0][0] = [1, 2]}
-
-% The terminal productions are stored twice, once as productions of the terminal symbols and once as the productions of the non-terminal variables, making both [reference algorithms] efficient.
-% }
-
-

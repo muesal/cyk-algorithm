@@ -18,7 +18,7 @@ The program can then be started with
 It takes up to four input arguments:
 
 1. Information on the set of test strings
-2. Which algorithm should be used; *naive* for the naive approach, *bu* for the bottom-up and *td* for the top-down algorithm, top-down is the default.
+2. Which algorithm should be used
 3. The path to the text-file with the grammar, if none is passed then grammar.txt is used.
 4. The form of the grammar
 
@@ -50,19 +50,19 @@ Same goes for the set of strings of the form ")()..()" from size 101 to 5001 in 
 >)(,(),25,5001,)
 
 
-
 ### The algorithms
 
-The naive approach is a recursive algorithm.
+The naive (*naive*) approach is a recursive algorithm.
 The counter holds the number of times the parser is called.
 
-Bottom-up is the original CYK-algorithm.
-It is not recursive and uses a table to store solutions to sub-problems.
-The counter counts how often the inner-most loop is executed.
-
-Top-down is recursive and thus very similar to the naive approach.
+Top-down (*td*) is recursive and thus very similar to the naive approach.
 It uses however a table for memoization, such that every sub-problem is only solved once.
 Here, counter holds the amount of executions of the innermost loop as well.
+
+Bottom-up (*bu*) is the original CYK-algorithm.
+It is not recursive and uses a table to store solutions to sub-problems.
+The counter counts how often the inner-most loop is executed.
+If not only the truth-value but also the number of errors and corrected strings are of interest, then use *correct* instead of *bu*.
 
 
 ### The grammar

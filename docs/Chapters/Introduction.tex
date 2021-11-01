@@ -1,22 +1,28 @@
-\section*{Introduction}
+\section{Introduction}
 
-The membership problem asks, whether a given string is in the language of a given context free grammar (CFG).
-A CFG holds a set of variables and productions.
+The question whether a given string is in the language of a given context free grammar (CFG) is known as the membership problem.
+A CFG contains a set of variables and productions.
 Applying the productions on the variables derives a finite set of strings, which form the language of the grammar.
 Na\"{i}ve approaches to solve the membership problem have exponential running time.
 In this report, we evaluate the Cocke-Younger-Kasami algorithm, which solves the problem in $O(n^3)$ for grammars that are in Chomsky normal form.
-We look at a bottom-up approach, as well as a top-down approach which uses memoization.
+We look at a bottom-up approach and a top-down approach which uses memoization.
 Further, we try to specialize the algorithm to parse strings for linear grammars.
 
-The evaluation shows, that bottom-up and top-down behave very differently.
+The evaluation shows that the bottom-up and top-down algorithms behave very differently.
 The running times of bottom-up are steadier than those of top-down, i.e., the running time varies less for parsing different strings of the same length for the same grammar.
-We further see, that bottom-up behaves better on average.
-Nevertheless, top-down can yield a lot faster running times, depending on the order of the productions of the grammar and the input string.
+We further see that the bottom-up approach behaves better on average.
+Nevertheless, the top-down approach can yield a lot faster running times, depending on the order of the productions of the grammar and the input string.
 
 However, adapting the bottom-up algorithm to parse linear grammars yields even better results.
 The running time for the specialized algorithm lies in $O(n^2)$.
 
-In section~\ref{sec:backgrund} we define Context free grammars and introduce the CYK algorithm, as well as the three different approaches used for the evaluation.
-In section~\ref{sec:specialization} we show how we generalize the algorithm for linear grammars, before we evaluate all algorithms in section~\ref{sec:Evaluation}.
+The CYK algorithm can further be used to not only solve the membership problem, but to also compute the minimal number of errors in the input string.
+This is the minimal number of symbols in the input string that must be replaced or deleted for the string to be in the language of the grammar.
+This algorithm is in $O(n^3)$ too, but in practice it is slow compared to the non-generalized algorithm.
+In a second step, the error count can be used to correct the string. The corresponding algorithm is in $O(n)$.
+
+In~\cref{sec:backgrund} we define context-free grammars and introduce the CYK algorithm, as well as the three different approaches used for the evaluation.
+In~\cref{sec:specialization} we show how we specialize the algorithm for linear grammars and how the CYK-algorithm can be used to detect and correct errors.
+Then, we evaluate all algorithms in~\cref{sec:Evaluation}.
 
 

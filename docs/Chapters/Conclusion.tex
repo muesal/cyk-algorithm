@@ -12,12 +12,15 @@ The analysis further showed, that the running times could often be explained, by
 Thus, if the input string is known, the faster algorithm can be detected with reasoning.
 
 In general, it is safe to say, that both algorithms perform better if the grammar produces words with a distinctive property in the beginning, rather than in the end.
-Parsing strings for the grammar of strings starting in a, different running times were yielded for different input strings of the same length.
+Parsing strings for the grammar of strings starting in yielded different running times for different input strings of the same length.
 Contrarily, for the grammar of strings ending in a, both the top-down and bottom-up parser yielded the same running times for any input string of same length, being slower than for any input string on the grammar for strings starting in a.
 
-Analyzing the transformation of a linear grammars to an equivalent grammar in CNF can easily be done.
+Transforming a linear grammar to an equivalent grammar in CNF can easily be done.
 However, it does not improve the running time compared to parsing an equivalent grammar which is already in CNF.
 Specializing the bottom-up algorithm on the other hand improves the running time a lot, as the algorithm is not in $O(n^3)$ anymore, but in $O(n^2)$.
-
 It would be interesting to analyze, how the specialized algorithm performs on different grammars.
 We could transform the grammars for strings starting and ending in a to equivalent linear grammars, and verify whether it still holds, that the running times are better if the distinctive property is in the beginning.
+
+The bottom-up CYK algorithm can also be generalized to return the number of errors in the input string, rather than merely the truth value.
+Despite the fact that the it is also in $O(n^3)$, the generalized algorithm is a lot slower than the original bottom-up algorithm.
+Correcting the input string using the memoization table on the other hand is very fast.

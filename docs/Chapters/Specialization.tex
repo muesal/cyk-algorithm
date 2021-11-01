@@ -1,21 +1,21 @@
 \section{Generalization and Specialization}
 \label{sec:specialization}
 
-In this section we try a specialization of the CYK algorithm. \todo{and generatlization, if I have time to do so}
-Instead of grammars in CNF, we will try grammars in a different form, namely \textbf{linear grammars}.
+In this section we try a specialization and a generalization of the CYK algorithm.
+For the specialization we parse grammars in a different form, namely \textbf{linear grammars}, instead of grammars in CNF.
 We first convert these grammars to CNF and compare the running times to the previous experiments.
 In a second step, we adapt the CYK algorithm to parse strings for those grammars, and compare the efficiency of both approaches.
 
-\subsection{Specialization with Linear Grammars}
+The generalization extends the bottom-up CYL algorithm by not only returning truth values for the membership problem, but by computing the errors in the input string.
+This error count is then used to correct the input string, such that it becomes a member of the language.
 
-\subsubsection{Linear Grammars}
+\subsection{Specialization with Linear Grammars}
 Similar to CNF, linear grammars also have certain restrictions on how the productions may look like.
 They have, however, only one restriction; each production may at most have one non-terminal variable on its right-hand side.
-\todo{reference?}
 
 We use \textbf{linear context free-grammars in Chomsky normal form} to generalize the CYK algorithm.
 These are grammars that are linear and where all productions have either one terminal symbol, or a non-terminal variable and a terminal symbol on their right-hand side.
-The example we gave in Section~\ref{subsec:exemplary_grammar}~can be easily transformed into linear CNF, by removing non-terminal variable $A$, resulting in the following productions:
+The example we gave in~\cref{subsec:exemplary_grammar}~can be easily transformed into linear CNF, by removing non-terminal variable $A$, resulting in the following productions:
 \begin{align*}
     S&\rightarrow aB \\
     B&\rightarrow Sb|b \\
@@ -29,7 +29,7 @@ For the exemplary grammar this would give the productions
 \begin{align*}
     S&\rightarrow a_T B \\
     B&\rightarrow Sb_T|b \\
-    a_T&\rightarrow a
+    a_T&\rightarrow a \\
     b_T&\rightarrow b
 \end{align*}
 
@@ -50,7 +50,7 @@ In contrast to the non-specialized approaches, we do not need to look at multipl
 The terminal symbol must be equal to the last or first symbol of the substring, depending on wether it is the first or second variable on the right-hand side of the production.
 The non-terminal variable must be able to derive the remaining symbols of the considered string.
 Therefore, only the last or the first splitting point need to be considered.
-Algorithm \ref{alg:bu_linear}~shows how this can be applied to the bottom-up CYK algorithm.
+\cref{alg:bu_linear}~shows how this can be applied to the bottom-up CYK algorithm.
 
 We chose to adapt the bottom-up algorithm rather than top-down, because it is less likely to run into stack-overflow errors.
 For big input strings, top-down may cause them because the compiler loses track of the recursive calls.
@@ -93,13 +93,201 @@ For big input strings, top-down may cause them because the compiler loses track 
     \end{algorithmic}
 \end{algorithm}
 
-The only difference between algorithm~\ref{alg:bu} and algorithm~\ref{alg:bu_linear} is what happens at the inner most loop, beneath line \ref{lst:bu_linear_11}.
+The only difference between~\cref{alg:bu} and~\cref{alg:bu_linear} is what happens at the inner most loop, beneath~\cref{lst:bu_linear_11}.
 Instead of iterating over all possible splitting points, we first check which part of the rule's right-hand side is the terminal symbol.
-We then first ask, if this is equal to the respective symbol in the input string, and if so check whether the terminal variable can derive the rest of the substring.
+We then ask if this is equal to the respective symbol in the input string.
+If so check whether the terminal variable can derive the rest of the substring.
 
 The running time of this algorithm is $O(n^2)$, since it is similar to the non-specialized bottom-up algorithm, but the inner most for-loop is not $O(n)$ anymore, but constant.
 
 Compared to parsing strings for a linear grammar, which was transformed to CNF, we expect this algorithm to be more efficient, since it must try less splitting points per production.
 Further, it will use less memory, since there are less non-terminal variables, compared to the transformed grammar, thus one dimension of $tab$ is smaller.
 
-\todo{Generalization: Error correction / First count number of errors}
+\pagebreak
+\subsection{Generalization for Error Correction}
+One may not only be interested in whether the input string is in the language, but also in how many errors there are and how the string could be altered to fit into the language.
+The bottom-up CYK algorithm can be adapted to fit this purpose.
+\cref{alg:bu_err} resembles the bottom-up algorithm from~\cref{sec:bottom_up} but generalizes it by counting the errors.
+For this, every cell of the memoization table will contain the configuration, i.e., the rule and splitting point, that derive a string which is closest to the actual substring of the input string.
+We chose the bottom-up approach, since all cells of the table must be filled to find this minimal configuration, and the bottom-up algorithm performs better on problems where all cells are filled, compared to the top-down algorithm(\cref{sec:Evaluation}).
+
+An error is a symbol in the input string which must be either deleted or replaced with another terminal symbol, in order for the start-variable to be able to derive the string.
+To count these deletions and replacements, the structure of the memoization table $tab$ is altered.
+$tab$ no longer stores boolean values, but 4-tuples, i.e., $(e, B, C, k)$, for every $tab[A,i,j]$.
+Among all strings which $A$ derives, the closest ones to substring $s[i..i+j]$ of the input string are the ones with $e$ errors.
+This means that $e$ symbols must either be replaced or deleted from $s[i..i+j]$.
+This string is derived by applying the rule $A\rightarrow BC$, where $B$ and $C$ derive the left and right part of $k$, respectively.
+
+In a second step, the memoization table can then be used to build a corresponding string that is in the language of the grammar.
+This is done by applying the productions as they are stored in $tab$, starting at $tab[S,1,n]$, and deleting or replacing a symbol when necessary.
+
+\subsubsection{Counting the errors}
+\cref{alg:bu_err} is the generalized bottom-up algorithm.
+The generalized algorithm requires an additional step for the initialization.
+The loop at~\cref{lst:bu_err_ini_1} sets the bottom row of $tab$ for each non-terminal variable.
+The value is either set to 1, if the variable has a terminal rule, or to $n$ otherwise.
+The second initializing loop starts at~\cref{lst:bu_err_ini_2} and resembles the one from the initial bottom-up algorithm, with the only difference that it sets the value of cells to $0$ instead of \textit{true}.
+
+The algorithm then proceeds in a very similar manner as the original bottom-up algorithm.
+The only other difference is that instead of looking for a rule and splitting point for which both subproblems yield \textit{true}, we iterate over all subproblems, picking the one with a minimal count of errors $e$.
+For this, we compare the value in $tab$ with the sum of the value of the two subproblems (\cref{lst:bu_err_comp}).
+If the new value is smaller, we memorize the new error value, as well as the configuration that leads to this error count.
+
+If there is a way to transform the string with only replacements into a string of the language, then the algorithm will return the minimal amount of those operations that must be performed.
+It always chooses the production which leads to the string with the smallest amount of errors.
+When looking at substrings of length 2 and a non-terminal $A$, the algorithm iterates over all rules for $A$, i.e., $A\rightarrow BC$.
+There is only one splitting point ($k=1$), and the corresponding entries in $tab$ can only have three different values: $n$, if the non-terminal has no terminal productions, 0, if the variable directly derives the symbol, or 1 if it does not.
+Out of all productions of $A$, the algorithm will choose the one where the sum of the two values for $B$ and $C$ are minimal.
+
+If a non-terminal variable has no terminal rules, we call it a dead-end, as it can not derive any substring of length 1.
+Such variables have error count $n$ for substrings of length 1 (\cref{lst:bu_err_ini_1}).
+Since all cells are initialized with error count $n$, solutions leading to a dead end are ignored due to the comparison at~\cref{lst:bu_err_comp}.
+This is important, since these variables can not be used to replace a symbol.
+
+When looking at longer substrings, the algorithm will choose the configurations, that use the former solutions with the smallest amount of errors.
+Thus, when the algorithm terminates, each cell will hold the configuration to reach the string closest to the input string in terms of errors.
+
+We excluded deletions from this reasoning, since they are not always computed correctly by this algorithm.
+The value returned by the algorithm is however an upper bound on the sum of corrections and deletions that must be performed.
+
+\begin{algorithm}[H]
+    \caption{Bottom-Up CYK Parser with Error Count}
+    \label{alg:bu_err}
+    \begin{algorithmic}[1]
+        \Function{Bottom-Up-Error}{input string $s[1..n]$}
+        \State allocate table $tab[|V|][n][n]$ initialized with \{$n$, null, null, null\}
+        \State counter $\leftarrow$ 0 \label{lst:bu_err_1}
+    
+        \For{$A\in V$} \label{lst:bu_err_ini_1}
+            \State $e\leftarrow n$ 
+            \If{$A$ has terminal rules}
+                \State $e \leftarrow 1$
+            \EndIf
+            \For{$i \in \{1,\dots,n\}$}
+                \State $tab[A,i,1].e \leftarrow e$
+            \EndFor
+        \EndFor
+        \State
+        
+        \For{$i \in \{1,\dots,n\}$} \label{lst:bu_err_ini_2}
+            \For{${A: A\rightarrow s[i]\in P}$}
+                \State $tab[A,i,1].e \leftarrow 0$ \label{lst:bu_err_ini_22}
+            \EndFor
+        \EndFor
+        \State
+
+        \For{$j\in \{2,\dots,n\}$} \hspace*{2.75cm}\textit{-- length of substring}\label{lst:bu_err_loop}
+            \For{$i\in \{1,\dots,n-j+1\}$} \hspace*{1cm}\textit{-- starting point of substring}
+                \For{$(A\rightarrow BC) \in P$} \hspace*{1.4cm}\textit{-- All productions}
+                    \For{$k \in \{1,\dots,j-1\}$} \hspace*{0.5cm}\textit{-- all splitting points}
+                        \State counter $\leftarrow$ counter + 1
+                        \State $e \leftarrow tab[B,i,k].e + tab[C,i+k+1,j-k-1].e$
+
+                        \If {$e < tab[A,i,j].e$} \label{lst:bu_err_comp}
+                            \State $tab[A,i,j]\leftarrow \{e, B, C, k\}$
+                        \EndIf
+                    \EndFor
+                \EndFor
+            \EndFor
+        \EndFor
+
+        \State \textbf{return} $tab[S,1,n]$
+        \EndFunction
+    \end{algorithmic}
+\end{algorithm}
+
+
+The two initialization loops (\cref{lst:bu_err_ini_1} to~\ref{lst:bu_err_ini_22})are both in $O(n)$, thus, the initialization is in $O(n)$.
+The nested loops starting at~\cref{lst:bu_err_loop} are in $O(n^3)$, as the loops are the same as in the original bottom-up algorithm.
+The running time is thus in $O(n^3)$.
+
+However, we expect this algorithm to be slower than the original bottom-up algorithm.
+In some cases, each splitting point may yield a slightly smaller error than the previous one, leading to the algorithm updating $tab[A,i,j]$ multiple times.
+This is more involved than simply setting a boolean value once \textit{true} is found.
+Further, since we are no longer working with booleans, the cells for both non-terminals on the right hand side of the rule are accessed at each iteration.
+Thus, the algorithm accesses more cells and updates more objects, leading to a longer running time.
+Further, since an array of size four is stored in every cell, where the original algorithm only stored a boolean value, more memory is used for counting the errors.
+
+\subsubsection{Correcting the Input String}
+\label{subsec:correcting}
+The information stored in $tab$ is used to transform the input string into a word of the grammars language.
+\cref{alg:ec} resembles the top-down approach in some ways.
+The function \texttt{Correct-String} initializes two global variables: the \texttt{counter} holding the number of recursive calls, and \texttt{errors}, the number of corrected and deleted symbols.
+The detected errors are counted again, since~\cref{alg:bu_err} only gives an upper bound.
+\cref{alg:ec} increases the variable whenever a symbol is deleted or replaced, and thus returns the actual number of necessary operations.
+
+\texttt{Correct-String} calls \texttt{Correct} on the start variable $S$, the first position of the string (1) and its length $n$.
+The input string and $tab$ are both global, so \texttt{Correct} can operate on them.
+\texttt{Correct} is a recursive function and takes non-terminal variable $A$, the starting point $i$ and length $j$ of a substring of the input string as parameters. 
+The algorithm distinguishes four different cases:
+\begin{enumerate}
+    \item \textbf{Correct:} If $tab[A,i,j.e]=0$ then the substring is correct and can be returned directly (\cref{lst:ec_correct}).
+    \item \textbf{Replacement:} If $j=0$, then $s[i]$ is wrong and replaced with a symbol that can be derived by $A$, i.e. any $a\in \Sigma$ such that $A\rightarrow a \in P$. If $A$ has no terminal rule ($A$ is a dead end), the input string cannot be transformed into a word of the language (\cref{lst:ec_replace}).
+    \item \textbf{Deletion:} If a lower error count can be reached by deleting either the first or last symbol of the current substring, then the symbol is deleted:
+        \begin{enumerate}[label=\alph*)]
+            \item Delete first symbol: if the error count of $tab[A,i+1,j-1]$ is smaller by more than one compared to $tab[A,i,j].e$, then implicitly delete $s[i]$ by returning \texttt{Correct($A, i+1, j-1$)} (\cref{lst:ec_first_delete}).
+            \item Delete last symbol: if the error count of $tab[A,i,j-1]$ is smaller by more than one compared to $tab[A,i,j].e$, then implicitly delete $s[i+j]$ by returning \texttt{Correct($A, i, j-1$)} (\cref{lst:ec_last_delete}).
+        \end{enumerate}
+
+    \item \textbf{Otherwise:} If none of the above hold, apply the rule stored in $tab[A,i,j]$ and concatenate the corrected version of the corresponding two substrings (\cref{lst:ec_return}).
+\end{enumerate} 
+
+\begin{algorithm}[H]
+    \caption{Error Correction}
+    \label{alg:ec}
+    \begin{algorithmic}[1]
+        \Function{Correct-String}{}
+        \State counter $\leftarrow$ 0
+        \State errors $\leftarrow$ 0
+        \State \textbf{return} \Call{Correct}{$S$, 1, n}
+        \EndFunction
+
+        \Function{Correct}{non-terminal A, int i, int j}
+            \State counter $\leftarrow$ counter + 1
+
+            \If{$tab[A,i,j].e = 0$}
+                \State \textbf{return} $s[i, i + j + 1]$ \hspace*{2.8cm}\textit{-- substring is correct} \label{lst:ec_correct}
+            \EndIf
+            \State
+
+            \If{j = 0}
+                \State \textbf{return} $c:A\rightarrow c\in R$ \hspace*{2.7cm}\textit{-- replace terminal} \label{lst:ec_replace}
+            \EndIf
+            \State
+
+            \State first $\leftarrow tab[A,i+1,j-1].e$ \label{lst:ec_first}
+            \State last $\leftarrow tab[A,i,j-1].e$ \label{lst:ec_last}
+            \If{first $<$ last}
+                \If{first $< tab[A,i,j].e - 1$} \hspace*{1.3cm}\textit{-- delete first terminal} \label{lst:ec_first_delete}
+                    \State error $\leftarrow$ error $+ 1$ 
+                    \State \textbf{return} \Call{Correct}{$A, i+1, j-1$}
+                \EndIf
+            \Else
+                \If{last $< tab[A,i,j].e - 1$} \hspace*{1.3cm}\textit{-- delete last terminal} \label{lst:ec_last_delete}
+                    \State error $\leftarrow$ error $+ 1$ 
+                    \State \textbf{return} \Call{Correct}{$A, i, j-1$}
+                \EndIf
+            \EndIf
+            \State
+
+            \State B $\leftarrow tab[A,i,j].B$
+            \State C $\leftarrow tab[A,i,j].C$
+            \State k $\leftarrow tab[A,i,j].k$
+
+            \State \textbf{return} \Call{Correct}{$B, i, k$} + \Call{Correct}{$C, i+k+1, j-k-1$} \label{lst:ec_return}
+        \EndFunction
+    \end{algorithmic}
+\end{algorithm}
+
+The running time of this algorithm depends heavily on the amount and position of the errors in the input string.
+If the errors are clustered, leaving long error-free substrings, the algorithm will run faster than if the errors are spread evenly.
+
+The worst running time is obtained when no substring of length greater than 1 is correct and if further no symbol must be deleted.
+In this case, as long as the substring is not just one symbol,~\cref{lst:ec_return} is executed.
+This results in $2n$ recursive calls.
+There are two base cases: either the string is correct (\cref{lst:ec_correct}), which in the worst case only occurs if the string has length one, or it has length one but is incorrect (\cref{lst:ec_replace}).
+Both cases run in $O(1)$.
+Thus, the overall worst case is in $O(n)$, since we perform a $O(1)$ operation $2n$ times.
+We exclude deletion of a symbol from this reasoning, since deleting a symbol leads to making only one recursive call instead of two.
+
+In the following section, we evaluate all algorithms that were introduced in the first two sections.

@@ -199,7 +199,7 @@ public class Parser {
             for (int i = 0; i < input.length - j; i++) {
                 // a = non-terminal
                 for (int a = 0; a < rules.length; a++) {
-                    tab_c[a][i][j][0] = j + 1; // max num of errors
+                    tab_c[a][i][j][0] = input.length; // max num of errors
 
                     // rule = every non-terminal rule of a
                     rules_of_a:
